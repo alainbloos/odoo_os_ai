@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- AI Provider — Form View                                       -->
+    <!-- ============================================================ -->
+    <record id="view_ai_provider_form" model="ir.ui.view">
+        <field name="name">ai.provider.form</field>
+        <field name="model">os.ai.provider</field>
+        <field name="arch" type="xml">
+            <form string="AI Provider">
+                <sheet>
+                    <div class="oe_button_box" name="button_box"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="e.g. My OpenAI"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Connection">
+                            <field name="provider_type"/>
+                            <field name="model_name" placeholder="e.g. gpt-4o-mini"/>
+                            <field name="api_key" password="False"/>
+                            <field name="base_url" placeholder="Leave empty for standard providers"/>
+                        </group>
+                        <group string="Settings">
+                            <field name="temperature"/>
+                            <field name="active" invisible="1"/>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                    <group string="Capabilities" col="4">
+                        <div colspan="4" invisible="provider_type != 'ollama'"
+                             class="alert alert-warning mb-0" role="alert">
+                            <i class="fa fa-exclamation-triangle"/> Auto-detect may not report all capabilities for Ollama models.
+                            If your model supports vision or other features, enable them manually.
+                        </div>
+                        <field name="capable_text" widget="boolean_toggle"/>
+                        <field name="capable_vision" widget="boolean_toggle"/>
+                        <field name="capable_image_generation" widget="boolean_toggle"/>
+                        <field name="capable_image_edit" widget="boolean_toggle"/>
+                        <div colspan="4">
+                            <button name="action_detect_capabilities"
+                                    type="object"
+                                    string="Auto-detect"
+                                    icon="fa-magic"
+                                    class="btn-link"/>
+                        </div>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- AI Provider — Tree View                                       -->
+    <!-- ============================================================ -->
+    <record id="view_ai_provider_tree" model="ir.ui.view">
+        <field name="name">ai.provider.tree</field>
+        <field name="model">os.ai.provider</field>
+        <field name="arch" type="xml">
+            <list string="AI Providers">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="provider_type"/>
+                <field name="model_name"/>
+                <field name="active" column_invisible="True"/>
+                <field name="capable_text" optional="show"/>
+                <field name="capable_vision" optional="show"/>
+                <field name="capable_image_generation" optional="show"/>
+                <field name="capable_image_edit" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- AI Provider — Action                                          -->
+    <!-- ============================================================ -->
+    <record id="action_ai_provider" model="ir.actions.act_window">
+        <field name="name">AI Providers</field>
+        <field name="res_model">os.ai.provider</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Configure your first AI Provider
+            </p>
+            <p>
+                Connect to OpenAI, Gemini, Anthropic, DeepSeek, xAI or Mistral.
+            </p>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Menu Items                                                    -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_os_ai_root"
+              name="OS AI"
+              parent="base.menu_custom"
+              sequence="90"/>
+
+    <menuitem id="menu_ai_provider"
+              name="AI Providers"
+              parent="menu_os_ai_root"
+              action="action_ai_provider"
+              sequence="10"/>
+
+</odoo>
