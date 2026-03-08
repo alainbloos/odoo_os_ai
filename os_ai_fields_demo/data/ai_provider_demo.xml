@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Demo AI Providers representing the latest models and capabilities -->
+
+    <!-- ============================================================== -->
+    <!-- OpenAI                                                          -->
+    <!-- ============================================================== -->
+
+    <record id="demo_provider_gpt_5_4" model="os.ai.provider">
+        <field name="name">OpenAI GPT-5.4</field>
+        <field name="provider_type">openai</field>
+        <field name="model_name">gpt-5.4</field>
+        <field name="sequence">10</field>
+        <field name="capable_text">True</field>
+        <field name="capable_vision">True</field>
+        <field name="capable_image_generation">False</field>
+        <field name="capable_image_edit">False</field>
+    </record>
+
+    <record id="demo_provider_gpt_image_1_5" model="os.ai.provider">
+        <field name="name">OpenAI gpt-image-1.5</field>
+        <field name="provider_type">openai</field>
+        <field name="model_name">gpt-image-1.5</field>
+        <field name="sequence">21</field>
+        <field name="capable_text">False</field>
+        <field name="capable_vision">False</field>
+        <field name="capable_image_generation">True</field>
+        <field name="capable_image_edit">False</field>
+    </record>
+
+    <!-- ============================================================== -->
+    <!-- Anthropic                                                       -->
+    <!-- ============================================================== -->
+
+    <record id="demo_provider_claude_4_6" model="os.ai.provider">
+        <field name="name">Anthropic Claude 4.6 Sonnet</field>
+        <field name="provider_type">anthropic</field>
+        <field name="model_name">claude-sonnet-4-6</field>
+        <field name="sequence">30</field>
+        <field name="capable_text">True</field>
+        <field name="capable_vision">True</field>
+        <field name="capable_image_generation">False</field>
+        <field name="capable_image_edit">False</field>
+    </record>
+
+    <!-- ============================================================== -->
+    <!-- Google Gemini                                                   -->
+    <!-- ============================================================== -->
+
+
+
+    <record id="demo_provider_nano_banana_2" model="os.ai.provider">
+        <field name="name">Nano Banana 2 (Gemini 3.1 Flash Image)</field>
+        <field name="provider_type">gemini</field>
+        <field name="model_name">gemini-3.1-flash-image-preview</field>
+        <field name="sequence">41</field>
+        <field name="capable_text">True</field>
+        <field name="capable_vision">True</field>
+        <field name="capable_image_generation">True</field>
+        <field name="capable_image_edit">True</field>
+    </record>
+
+    <record id="demo_provider_gemini_2_5_flash_image" model="os.ai.provider">
+        <field name="name">Google Gemini 2.5 Flash Image</field>
+        <field name="provider_type">gemini</field>
+        <field name="model_name">gemini-2.5-flash-image</field>
+        <field name="sequence">42</field>
+        <field name="capable_text">True</field>
+        <field name="capable_vision">True</field>
+        <field name="capable_image_generation">True</field>
+        <field name="capable_image_edit">True</field>
+    </record>
+
+    <record id="demo_provider_imagen_4" model="os.ai.provider">
+        <field name="name">Google Imagen 4.0 Fast</field>
+        <field name="provider_type">gemini</field>
+        <field name="model_name">imagen-4.0-fast-generate-001</field>
+        <field name="sequence">43</field>
+        <field name="capable_text">False</field>
+        <field name="capable_vision">False</field>
+        <field name="capable_image_generation">True</field>
+        <field name="capable_image_edit">False</field>
+    </record>
+
+    <!-- ============================================================== -->
+    <!-- xAI (Grok)                                                      -->
+    <!-- ============================================================== -->
+
+    <record id="demo_provider_grok_3" model="os.ai.provider">
+        <field name="name">xAI Grok 3</field>
+        <field name="provider_type">xai</field>
+        <field name="model_name">grok-3</field>
+        <field name="sequence">15</field>
+        <field name="capable_text">True</field>
+        <field name="capable_vision">True</field>
+        <field name="capable_image_generation">False</field>
+        <field name="capable_image_edit">False</field>
+    </record>
+
+    <record id="demo_provider_grok_2_vision" model="os.ai.provider">
+        <field name="name">xAI Grok 2 Vision</field>
+        <field name="provider_type">xai</field>
+        <field name="model_name">grok-2-vision</field>
+        <field name="sequence">16</field>
+        <field name="capable_text">True</field>
+        <field name="capable_vision">True</field>
+        <field name="capable_image_generation">False</field>
+        <field name="capable_image_edit">False</field>
+    </record>
+
+
+
+    <!-- ============================================================== -->
+    <!-- Mistral                                                         -->
+    <!-- ============================================================== -->
+
+    <record id="demo_provider_pixtral_large" model="os.ai.provider">
+        <field name="name">Mistral Pixtral Large</field>
+        <field name="provider_type">mistral</field>
+        <field name="model_name">pixtral-large-latest</field>
+        <field name="sequence">60</field>
+        <field name="capable_text">True</field>
+        <field name="capable_vision">True</field>
+        <field name="capable_image_generation">False</field>
+        <field name="capable_image_edit">False</field>
+    </record>
+
+    <record id="demo_provider_mistral_large" model="os.ai.provider">
+        <field name="name">Mistral Large</field>
+        <field name="provider_type">mistral</field>
+        <field name="model_name">mistral-large-2512</field>
+        <field name="sequence">61</field>
+        <field name="capable_text">True</field>
+        <field name="capable_vision">True</field>
+        <field name="capable_image_generation">False</field>
+        <field name="capable_image_edit">False</field>
+    </record>
+
+    <!-- ============================================================== -->
+    <!-- DeepSeek                                                        -->
+    <!-- ============================================================== -->
+
+    <record id="demo_provider_deepseek_chat" model="os.ai.provider">
+        <field name="name">DeepSeek Chat</field>
+        <field name="provider_type">deepseek</field>
+        <field name="model_name">deepseek-chat</field>
+        <field name="sequence">50</field>
+        <field name="capable_text">True</field>
+        <field name="capable_vision">False</field>
+        <field name="capable_image_generation">False</field>
+        <field name="capable_image_edit">False</field>
+    </record>
+
+    <record id="demo_provider_deepseek_reasoner" model="os.ai.provider">
+        <field name="name">DeepSeek Reasoner</field>
+        <field name="provider_type">deepseek</field>
+        <field name="model_name">deepseek-reasoner</field>
+        <field name="sequence">51</field>
+        <field name="capable_text">True</field>
+        <field name="capable_vision">False</field>
+        <field name="capable_image_generation">False</field>
+        <field name="capable_image_edit">False</field>
+    </record>
+
+    <!-- ============================================================== -->
+    <!-- Ollama (Local)                                                  -->
+    <!-- ============================================================== -->
+
+    <record id="demo_provider_ollama_qwen25_3b" model="os.ai.provider">
+        <field name="name">Ollama Qwen 2.5 3B</field>
+        <field name="provider_type">ollama</field>
+        <field name="model_name">qwen2.5:3b</field>
+        <field name="sequence">70</field>
+        <field name="capable_text">True</field>
+        <field name="capable_vision">False</field>
+        <field name="capable_image_generation">False</field>
+        <field name="capable_image_edit">False</field>
+    </record>
+
+    <record id="demo_provider_ollama_gemma3_4b" model="os.ai.provider">
+        <field name="name">Ollama Gemma 3 4B</field>
+        <field name="provider_type">ollama</field>
+        <field name="model_name">gemma3:4b</field>
+        <field name="sequence">71</field>
+        <field name="capable_text">True</field>
+        <field name="capable_vision">False</field>
+        <field name="capable_image_generation">False</field>
+        <field name="capable_image_edit">False</field>
+    </record>
+
+    <record id="demo_provider_ollama_phi4_mini" model="os.ai.provider">
+        <field name="name">Ollama Phi-4 Mini</field>
+        <field name="provider_type">ollama</field>
+        <field name="model_name">phi4-mini</field>
+        <field name="sequence">72</field>
+        <field name="capable_text">True</field>
+        <field name="capable_vision">False</field>
+        <field name="capable_image_generation">False</field>
+        <field name="capable_image_edit">False</field>
+    </record>
+
+    <record id="demo_provider_ollama_phi4" model="os.ai.provider">
+        <field name="name">Ollama Phi-4</field>
+        <field name="provider_type">ollama</field>
+        <field name="model_name">phi4</field>
+        <field name="sequence">73</field>
+        <field name="capable_text">True</field>
+        <field name="capable_vision">False</field>
+        <field name="capable_image_generation">False</field>
+        <field name="capable_image_edit">False</field>
+    </record>
+
+</odoo>

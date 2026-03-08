@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- AI Prompt — Form View                                         -->
+    <!-- ============================================================ -->
+    <record id="view_ai_prompt_form" model="ir.ui.view">
+        <field name="name">ai.prompt.form</field>
+        <field name="model">os.ai.prompt</field>
+        <field name="arch" type="xml">
+            <form string="AI Prompt">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_logs" type="object"
+                                class="oe_stat_button" icon="fa-list">
+                            <field name="ai_log_count" widget="statinfo" string="Logs"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="e.g. Sale Order Summary"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Target">
+                            <field name="model_id"/>
+                            <field name="field_name"/>
+                            <field name="sequence"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Prompt Template">
+                        <field name="prompt_text" nolabel="1" colspan="2"
+                               placeholder="Summarize the order {name} for client {partner_id.name} with total {amount_total}"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- AI Prompt — Tree View                                         -->
+    <!-- ============================================================ -->
+    <record id="view_ai_prompt_tree" model="ir.ui.view">
+        <field name="name">ai.prompt.tree</field>
+        <field name="model">os.ai.prompt</field>
+        <field name="arch" type="xml">
+            <tree string="AI Prompts">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="model_id"/>
+                <field name="field_name"/>
+                <field name="active" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- AI Prompt — Action                                            -->
+    <!-- ============================================================ -->
+    <record id="action_ai_prompt" model="ir.actions.act_window">
+        <field name="name">AI Prompts</field>
+        <field name="res_model">os.ai.prompt</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No AI prompts defined yet
+            </p>
+            <p>
+                AI prompts are auto-generated from fields that use
+                <code>ai_compute</code>. You can also create them manually.
+            </p>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Menu Item                                                     -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_ai_prompt"
+              name="AI Prompts"
+              parent="menu_os_ai_root"
+              action="action_ai_prompt"
+              sequence="20"/>
+
+</odoo>
