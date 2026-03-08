@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+os_ai.access_ai_provider_system,access_ai_provider_system,os_ai.model_os_ai_provider,base.group_system,1,1,1,1
+os_ai.access_ai_provider_user,access_ai_provider_user,os_ai.model_os_ai_provider,base.group_user,1,0,0,0
+os_ai.access_ai_prompt_system,access_ai_prompt_system,os_ai.model_os_ai_prompt,base.group_system,1,1,1,1
+os_ai.access_ai_prompt_user,access_ai_prompt_user,os_ai.model_os_ai_prompt,base.group_user,1,0,0,0
+os_ai.access_ai_log_system,access_ai_log_system,os_ai.model_os_ai_log,base.group_system,1,1,1,1
+os_ai.access_ai_log_user,access_ai_log_user,os_ai.model_os_ai_log,base.group_user,1,0,0,0
