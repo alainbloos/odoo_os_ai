@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+</head>
+<body>
+
+<div style="max-width: 860px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; color: #333; line-height: 1.6; padding: 0 15px;">
+
+    <!-- Overview -->
+    <div style="margin-bottom: 40px;">
+        <h2 style="color: #017e84; border-bottom: 2px solid #017e84; padding-bottom: 8px;">Overview</h2>
+        <p>
+            <strong>OS AI Base</strong> is the core infrastructure module that brings AI capabilities to your Odoo instance.
+            Configure multiple AI providers, route requests to the right model based on capabilities, and keep full audit
+            logs of every LLM call &mdash; all from within Odoo.
+        </p>
+        <p>
+            Powered by <a href="https://github.com/BerriAI/litellm" style="color: #017e84;">litellm</a>, the module supports
+            100+ LLM providers out of the box, including cloud APIs and locally hosted models via
+            <a href="https://ollama.com" style="color: #017e84;">Ollama</a>.
+        </p>
+    </div>
+
+    <!-- Features -->
+    <div style="margin-bottom: 40px;">
+        <h2 style="color: #017e84; border-bottom: 2px solid #017e84; padding-bottom: 8px;">Features</h2>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee; vertical-align: top; width: 40px;">&#9881;</td>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee;">
+                    <strong>Multi-Provider Management</strong><br/>
+                    Configure any number of AI providers with priority-based sequencing. Switch models without changing code.
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee; vertical-align: top;">&#9889;</td>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee;">
+                    <strong>Capability Auto-Detect</strong><br/>
+                    One click to detect what each model can do: text generation, vision, image generation, and image editing.
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee; vertical-align: top;">&#128268;</td>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee;">
+                    <strong>Capability-Based Routing</strong><br/>
+                    Requests are automatically routed to the best available provider based on what the task requires.
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee; vertical-align: top;">&#128203;</td>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee;">
+                    <strong>Full Logging &amp; Audit Trail</strong><br/>
+                    Every LLM call is recorded: provider, model, prompts, response, token usage, cost in USD, duration, and success/error status.
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee; vertical-align: top;">&#128221;</td>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee;">
+                    <strong>Reusable Prompt Templates</strong><br/>
+                    Manage prompts from the UI. Templates are auto-created when AI-enabled modules are installed and can be edited without touching code.
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee; vertical-align: top;">&#127968;</td>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee;">
+                    <strong>Local Models via Ollama</strong><br/>
+                    Run models locally with zero cloud costs. No API key needed. Works with Qwen, Gemma, Phi, Llama, and many more.
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Supported Providers -->
+    <div style="margin-bottom: 40px;">
+        <h2 style="color: #017e84; border-bottom: 2px solid #017e84; padding-bottom: 8px;">Supported Providers</h2>
+        <p>
+            All routing is handled by <strong>litellm</strong>, which supports <strong>100+ LLM providers</strong>.
+            The following have first-class support with built-in type selection:
+        </p>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+            <thead>
+                <tr style="background: #f8f9fa;">
+                    <th style="padding: 10px 15px; text-align: left; border-bottom: 2px solid #dee2e6;">Provider</th>
+                    <th style="padding: 10px 15px; text-align: left; border-bottom: 2px solid #dee2e6;">Example Models</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>OpenAI</strong></td><td style="padding: 10px 15px; border-bottom: 1px solid #eee;">GPT-4o, o-series, gpt-image-1, DALL-E</td></tr>
+                <tr><td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>Google Gemini</strong></td><td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Gemini 2.5 Flash, Gemini Pro, Imagen</td></tr>
+                <tr><td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>Anthropic</strong></td><td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Claude Sonnet, Claude Opus, Claude Haiku</td></tr>
+                <tr><td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>xAI</strong></td><td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Grok models</td></tr>
+                <tr><td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>DeepSeek</strong></td><td style="padding: 10px 15px; border-bottom: 1px solid #eee;">DeepSeek Chat, DeepSeek Reasoner</td></tr>
+                <tr><td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>Mistral</strong></td><td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Mistral Large, Pixtral</td></tr>
+                <tr><td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>Ollama (Local)</strong></td><td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Qwen, Gemma, Phi, Llama &mdash; any locally hosted model</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
+            Any model from any litellm-compatible provider can be used, including self-hosted endpoints via custom base URLs.
+        </p>
+    </div>
+
+    <!-- Configuration -->
+    <div style="margin-bottom: 40px;">
+        <h2 style="color: #017e84; border-bottom: 2px solid #017e84; padding-bottom: 8px;">Configuration</h2>
+        <ol style="padding-left: 20px;">
+            <li style="margin-bottom: 10px;">Install the <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">litellm</code> Python package: <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">pip install litellm</code></li>
+            <li style="margin-bottom: 10px;">Enable <strong>Developer Mode</strong> (Settings &gt; General Settings &gt; Developer Tools)</li>
+            <li style="margin-bottom: 10px;">Navigate to <strong>Settings &gt; Technical &gt; OS AI &gt; AI Providers</strong></li>
+            <li style="margin-bottom: 10px;">Create a provider: select the type, enter your API key and model name</li>
+            <li style="margin-bottom: 10px;">Click <strong>Auto-detect</strong> to auto-configure what the model supports</li>
+            <li style="margin-bottom: 10px;">Set priority order using the sequence field &mdash; lower numbers are tried first</li>
+        </ol>
+        <p>
+            <strong>Menu locations</strong> (Developer Mode required):
+        </p>
+        <ul style="padding-left: 20px;">
+            <li><strong>AI Providers:</strong> Settings &gt; Technical &gt; OS AI &gt; AI Providers</li>
+            <li><strong>Prompt Templates:</strong> Settings &gt; Technical &gt; OS AI &gt; AI Prompts</li>
+            <li><strong>AI Logs:</strong> Settings &gt; Technical &gt; OS AI &gt; AI Logs</li>
+        </ul>
+    </div>
+
+    <!-- Data Privacy -->
+    <div style="margin-bottom: 40px;">
+        <h2 style="color: #017e84; border-bottom: 2px solid #017e84; padding-bottom: 8px;">Data Privacy</h2>
+        <div style="background: #f0fafa; border-left: 4px solid #017e84; padding: 15px 20px; border-radius: 0 4px 4px 0;">
+            <ul style="padding-left: 20px; margin: 0;">
+                <li style="margin-bottom: 8px;"><strong>You control all API keys.</strong> Keys are stored in your own Odoo database and never leave your server except to authenticate with the provider you configured.</li>
+                <li style="margin-bottom: 8px;"><strong>No intermediary.</strong> This module communicates directly with the AI providers you choose. There is no third-party proxy, relay, or telemetry service.</li>
+                <li style="margin-bottom: 8px;"><strong>Data is sent only to your configured providers.</strong> Nothing is transmitted unless you explicitly set up a provider and trigger an AI call.</li>
+                <li style="margin-bottom: 8px;"><strong>Opt-in by design.</strong> No AI calls happen until you create a provider and a module actively uses it. Installing the module alone does nothing.</li>
+                <li style="margin-bottom: 0;"><strong>Local models supported.</strong> Use Ollama to run models entirely on your own hardware &mdash; no data ever leaves your network.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Technical -->
+    <div style="margin-bottom: 40px;">
+        <h2 style="color: #017e84; border-bottom: 2px solid #017e84; padding-bottom: 8px;">Technical Details</h2>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr><td style="padding: 8px 15px; border-bottom: 1px solid #eee; font-weight: bold; width: 180px;">Technical Name</td><td style="padding: 8px 15px; border-bottom: 1px solid #eee;"><code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">os_ai</code></td></tr>
+            <tr><td style="padding: 8px 15px; border-bottom: 1px solid #eee; font-weight: bold;">License</td><td style="padding: 8px 15px; border-bottom: 1px solid #eee;">LGPL-3</td></tr>
+            <tr><td style="padding: 8px 15px; border-bottom: 1px solid #eee; font-weight: bold;">Dependencies</td><td style="padding: 8px 15px; border-bottom: 1px solid #eee;">base</td></tr>
+            <tr><td style="padding: 8px 15px; border-bottom: 1px solid #eee; font-weight: bold;">Python Dependencies</td><td style="padding: 8px 15px; border-bottom: 1px solid #eee;">litellm</td></tr>
+        </table>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align: center; padding: 20px 0; border-top: 1px solid #eee; color: #999; font-size: 0.85em;">
+        <p>Developed by <strong>Alain Bloos</strong> &mdash; <a href="https://github.com/alainbloos/odoo_os_ai" style="color: #017e84;">GitHub</a></p>
+    </div>
+
+</div>
+
+</body>
+</html>
