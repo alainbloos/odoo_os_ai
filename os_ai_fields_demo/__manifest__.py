@@ -8,7 +8,7 @@
     'category': 'Technical',
     'author': 'Alain Bloos',
     'maintainer': 'Alain Bloos',
-    'website': 'https://github.com/alainbloos/odoo-ai-fields',
+    'website': 'https://github.com/alainbloos/odoo_os_ai',
     'depends': ['os_ai_fields', 'contacts'],
     'data': [
         'data/ai_provider_demo.xml',
