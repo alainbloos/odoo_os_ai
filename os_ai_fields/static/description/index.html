@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+</head>
+<body>
+
+<div style="max-width: 860px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; color: #333; line-height: 1.6; padding: 0 15px;">
+
+    <!-- Overview -->
+    <div style="margin-bottom: 40px;">
+        <h2 style="color: #017e84; border-bottom: 2px solid #017e84; padding-bottom: 8px;">Overview</h2>
+        <p>
+            <strong>OS AI Computed Fields</strong> adds an <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">ai_compute</code>
+            parameter to every Odoo field type. Write a prompt, declare dependencies, and the field is automatically
+            computed by an LLM &mdash; just like native <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">compute</code>, but powered by AI.
+        </p>
+        <p>
+            Fields are processed asynchronously by a background cron job (or synchronously on save),
+            with batch processing, automatic capability routing, and full logging.
+        </p>
+    </div>
+
+    <!-- Quick Example -->
+    <div style="margin-bottom: 40px;">
+        <h2 style="color: #017e84; border-bottom: 2px solid #017e84; padding-bottom: 8px;">Quick Example</h2>
+        <pre style="background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 6px; overflow-x: auto; font-size: 0.9em; line-height: 1.5;"><code>from odoo import fields, models
+
+class SaleOrder(models.Model):
+    _inherit = 'sale.order'
+
+    ai_summary = fields.Text(
+        "AI Summary",
+        ai_compute="Summarize this sale order for {partner_id.name}: "
+                   "lines={order_line}, total={amount_total}",
+        ai_compute_depends=['partner_id', 'order_line', 'amount_total'],
+        store=True,
+    )</code></pre>
+        <p style="margin-top: 10px;">
+            That is all the code needed. The field computes automatically whenever the dependencies change.
+        </p>
+    </div>
+
+    <!-- Features -->
+    <div style="margin-bottom: 40px;">
+        <h2 style="color: #017e84; border-bottom: 2px solid #017e84; padding-bottom: 8px;">Features</h2>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee; vertical-align: top; width: 40px;">&#9881;</td>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee;">
+                    <strong>Works on Any Odoo Field</strong><br/>
+                    Add <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">ai_compute</code> to Char, Text, Html, Integer, Float, Selection, Many2one, Many2many, Image, and Binary fields.
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee; vertical-align: top;">&#128337;</td>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee;">
+                    <strong>Async &amp; Sync Modes</strong><br/>
+                    Default: asynchronous via cron (non-blocking). Set <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">ai_compute_async=False</code> for immediate computation on save.
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee; vertical-align: top;">&#128218;</td>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee;">
+                    <strong>Batch Processing</strong><br/>
+                    Multiple records are processed in a single LLM call using structured JSON schemas. Configurable batch size (default: 40).
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee; vertical-align: top;">&#127760;</td>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee;">
+                    <strong>Auto-Translation</strong><br/>
+                    Set <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">translate=True</code> and the system generates values in all installed languages in a single LLM call.
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee; vertical-align: top;">&#128065;</td>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee;">
+                    <strong>Vision, Image Generation &amp; Editing</strong><br/>
+                    Analyze images (vision), create images from text, or transform existing images. Capability routing is automatic.
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee; vertical-align: top;">&#128196;</td>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee;">
+                    <strong>PDF &amp; Excel Document Generation</strong><br/>
+                    Binary fields with <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">ai_document_type='pdf'</code> or
+                    <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">'xlsx'</code> generate downloadable documents.
+                    Uses wkhtmltopdf and openpyxl (both bundled with Odoo).
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee; vertical-align: top;">&#128736;</td>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee;">
+                    <strong>Resilient Cron</strong><br/>
+                    Per-batch commits, automatic rollback on errors, and auto-stop after 3 consecutive failures.
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Supported Field Types -->
+    <div style="margin-bottom: 40px;">
+        <h2 style="color: #017e84; border-bottom: 2px solid #017e84; padding-bottom: 8px;">Supported Field Types</h2>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+            <thead>
+                <tr style="background: #f8f9fa;">
+                    <th style="padding: 10px 15px; text-align: left; border-bottom: 2px solid #dee2e6;">Category</th>
+                    <th style="padding: 10px 15px; text-align: left; border-bottom: 2px solid #dee2e6;">Field Types</th>
+                    <th style="padding: 10px 15px; text-align: left; border-bottom: 2px solid #dee2e6;">Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>Text</strong></td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Char, Text, Html</td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Optional <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">translate=True</code> for multi-language</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>Numeric</strong></td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Integer, Float</td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">LLM output parsed and validated automatically</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>Selection</strong></td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Selection</td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">LLM picks from the field's defined options</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>Relational</strong></td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Many2one, Many2many</td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">LLM receives options filtered by <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">domain</code></td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>Images</strong></td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Image, Binary</td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Vision, generation, and editing</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>Documents</strong></td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Binary</td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">With <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">ai_document_type='pdf'</code> or <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">'xlsx'</code></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Parameters -->
+    <div style="margin-bottom: 40px;">
+        <h2 style="color: #017e84; border-bottom: 2px solid #017e84; padding-bottom: 8px;">Parameters</h2>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+            <thead>
+                <tr style="background: #f8f9fa;">
+                    <th style="padding: 10px 15px; text-align: left; border-bottom: 2px solid #dee2e6;">Parameter</th>
+                    <th style="padding: 10px 15px; text-align: left; border-bottom: 2px solid #dee2e6;">Type</th>
+                    <th style="padding: 10px 15px; text-align: left; border-bottom: 2px solid #dee2e6;">Default</th>
+                    <th style="padding: 10px 15px; text-align: left; border-bottom: 2px solid #dee2e6;">Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">ai_compute</code></td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">str</td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">&mdash;</td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Prompt template with <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">{field}</code> placeholders</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">ai_compute_depends</code></td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">list</td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">[]</td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Fields that trigger recomputation when changed</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">ai_compute_async</code></td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">bool</td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">True</td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">True: cron-based. False: compute on save</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">ai_compute_batch_size</code></td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">int</td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">40</td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Max records per LLM call</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">ai_document_type</code></td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">str</td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">None</td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">'pdf'</code> or <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">'xlsx'</code> for Binary fields</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3 style="color: #555; margin-top: 25px;">Prompt Placeholders</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+            <thead>
+                <tr style="background: #f8f9fa;">
+                    <th style="padding: 10px 15px; text-align: left; border-bottom: 2px solid #dee2e6;">Placeholder</th>
+                    <th style="padding: 10px 15px; text-align: left; border-bottom: 2px solid #dee2e6;">Resolves To</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td style="padding: 8px 15px; border-bottom: 1px solid #eee;"><code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">{name}</code></td><td style="padding: 8px 15px; border-bottom: 1px solid #eee;">Value of field <code>name</code> on the record</td></tr>
+                <tr><td style="padding: 8px 15px; border-bottom: 1px solid #eee;"><code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">{partner_id.name}</code></td><td style="padding: 8px 15px; border-bottom: 1px solid #eee;">Dot-notation for related fields</td></tr>
+                <tr><td style="padding: 8px 15px; border-bottom: 1px solid #eee;"><code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">{order_line}</code></td><td style="padding: 8px 15px; border-bottom: 1px solid #eee;">One2many/Many2many display names</td></tr>
+                <tr><td style="padding: 8px 15px; border-bottom: 1px solid #eee;"><code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">{image_1920}</code></td><td style="padding: 8px 15px; border-bottom: 1px solid #eee;">Binary/Image fields sent as base64 to vision models</td></tr>
+                <tr><td style="padding: 8px 15px; border-bottom: 1px solid #eee;"><code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">{__date__}</code></td><td style="padding: 8px 15px; border-bottom: 1px solid #eee;">Current date (YYYY-MM-DD)</td></tr>
+                <tr><td style="padding: 8px 15px; border-bottom: 1px solid #eee;"><code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">{__user__}</code></td><td style="padding: 8px 15px; border-bottom: 1px solid #eee;">Current user's name</td></tr>
+                <tr><td style="padding: 8px 15px; border-bottom: 1px solid #eee;"><code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">{__company__}</code></td><td style="padding: 8px 15px; border-bottom: 1px solid #eee;">Current company's name</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- More Examples -->
+    <div style="margin-bottom: 40px;">
+        <h2 style="color: #017e84; border-bottom: 2px solid #017e84; padding-bottom: 8px;">More Examples</h2>
+
+        <h3 style="color: #555; margin-top: 20px;">Numeric scoring</h3>
+        <pre style="background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 6px; overflow-x: auto; font-size: 0.9em; line-height: 1.5;"><code>ai_score = fields.Integer(
+    ai_compute="Rate profile completeness 0-100: "
+               "name={name}, email={email}, phone={phone}",
+    ai_compute_depends=['name', 'email', 'phone'],
+    store=True,
+)</code></pre>
+
+        <h3 style="color: #555; margin-top: 20px;">AI classification (Selection)</h3>
+        <pre style="background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 6px; overflow-x: auto; font-size: 0.9em; line-height: 1.5;"><code>ai_type = fields.Selection(
+    [('prospect', 'Prospect'),
+     ('customer', 'Customer'),
+     ('supplier', 'Supplier')],
+    ai_compute="Classify {name}: vat={vat}, "
+               "job={function}, company={parent_id.name}",
+    ai_compute_depends=['name', 'vat', 'function', 'parent_id'],
+    store=True,
+)</code></pre>
+
+        <h3 style="color: #555; margin-top: 20px;">Vision &mdash; describe an image</h3>
+        <pre style="background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 6px; overflow-x: auto; font-size: 0.9em; line-height: 1.5;"><code>ai_description = fields.Text(
+    ai_compute="Describe this photo: {image_1920}",
+    ai_compute_depends=['image_1920'],
+    store=True,
+)</code></pre>
+
+        <h3 style="color: #555; margin-top: 20px;">PDF and Excel documents</h3>
+        <pre style="background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 6px; overflow-x: auto; font-size: 0.9em; line-height: 1.5;"><code>ai_report = fields.Binary(
+    "Report (PDF)",
+    ai_document_type='pdf',
+    ai_compute="Generate an HTML report for {name}",
+    ai_compute_depends=['name', 'email', 'phone'],
+    store=True,
+)</code></pre>
+    </div>
+
+    <!-- Configuration -->
+    <div style="margin-bottom: 40px;">
+        <h2 style="color: #017e84; border-bottom: 2px solid #017e84; padding-bottom: 8px;">Configuration</h2>
+        <ol style="padding-left: 20px;">
+            <li style="margin-bottom: 10px;">Install <strong>OS AI Base</strong> first (pulled automatically as a dependency).</li>
+            <li style="margin-bottom: 10px;">Configure at least one AI provider in <strong>Settings &gt; Technical &gt; OS AI &gt; AI Providers</strong> (Developer Mode required).</li>
+            <li style="margin-bottom: 10px;">Optionally adjust the system prompt in <strong>Settings &gt; OS AI Fields</strong>.</li>
+            <li style="margin-bottom: 10px;">The background cron runs every 5 minutes by default. Adjust in <strong>Settings &gt; Technical &gt; Automation &gt; Scheduled Actions</strong>.</li>
+        </ol>
+    </div>
+
+    <!-- Technical -->
+    <div style="margin-bottom: 40px;">
+        <h2 style="color: #017e84; border-bottom: 2px solid #017e84; padding-bottom: 8px;">Technical Details</h2>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr><td style="padding: 8px 15px; border-bottom: 1px solid #eee; font-weight: bold; width: 180px;">Technical Name</td><td style="padding: 8px 15px; border-bottom: 1px solid #eee;"><code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">os_ai_fields</code></td></tr>
+            <tr><td style="padding: 8px 15px; border-bottom: 1px solid #eee; font-weight: bold;">License</td><td style="padding: 8px 15px; border-bottom: 1px solid #eee;">LGPL-3</td></tr>
+            <tr><td style="padding: 8px 15px; border-bottom: 1px solid #eee; font-weight: bold;">Dependencies</td><td style="padding: 8px 15px; border-bottom: 1px solid #eee;">os_ai</td></tr>
+        </table>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align: center; padding: 20px 0; border-top: 1px solid #eee; color: #999; font-size: 0.85em;">
+        <p>Developed by <strong>Alain Bloos</strong> &mdash; <a href="https://github.com/alainbloos/odoo_os_ai" style="color: #017e84;">GitHub</a></p>
+    </div>
+
+</div>
+
+</body>
+</html>
