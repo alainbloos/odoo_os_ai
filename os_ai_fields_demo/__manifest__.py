@@ -4,7 +4,7 @@
 {
     'name': 'AI Fields Demo',
     'version': '17.0.1.0.0',
-    'summary': 'Demo module showcasing ai_compute on res.partner with various field types',
+    'summary': '15 example AI fields on res.partner — install in a test database only',
     'category': 'Technical',
     'author': 'Alain Bloos',
     'maintainer': 'Alain Bloos',
@@ -17,5 +17,6 @@
     'installable': True,
     'auto_install': False,
     'application': False,
+    'images': ['static/description/icon.png'],
     'license': 'LGPL-3',
 }
