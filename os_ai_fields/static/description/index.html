@@ -25,7 +25,7 @@
     <!-- Quick Example -->
     <div style="margin-bottom: 40px;">
         <h2 style="color: #017e84; border-bottom: 2px solid #017e84; padding-bottom: 8px;">Quick Example</h2>
-        <pre style="background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 6px; overflow-x: auto; font-size: 0.9em; line-height: 1.5;"><code>from odoo import fields, models
+        <pre style="background: #f5f5f5; color: #333; border: 1px solid #ddd; padding: 20px; border-radius: 6px; overflow-x: auto; font-size: 0.9em; line-height: 1.5;"><code>from odoo import fields, models
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
@@ -217,7 +217,7 @@ class SaleOrder(models.Model):
         <h2 style="color: #017e84; border-bottom: 2px solid #017e84; padding-bottom: 8px;">More Examples</h2>
 
         <h3 style="color: #555; margin-top: 20px;">Numeric scoring</h3>
-        <pre style="background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 6px; overflow-x: auto; font-size: 0.9em; line-height: 1.5;"><code>ai_score = fields.Integer(
+        <pre style="background: #f5f5f5; color: #333; border: 1px solid #ddd; padding: 20px; border-radius: 6px; overflow-x: auto; font-size: 0.9em; line-height: 1.5;"><code>ai_score = fields.Integer(
     ai_compute="Rate profile completeness 0-100: "
                "name={name}, email={email}, phone={phone}",
     ai_compute_depends=['name', 'email', 'phone'],
@@ -225,7 +225,7 @@ class SaleOrder(models.Model):
 )</code></pre>
 
         <h3 style="color: #555; margin-top: 20px;">AI classification (Selection)</h3>
-        <pre style="background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 6px; overflow-x: auto; font-size: 0.9em; line-height: 1.5;"><code>ai_type = fields.Selection(
+        <pre style="background: #f5f5f5; color: #333; border: 1px solid #ddd; padding: 20px; border-radius: 6px; overflow-x: auto; font-size: 0.9em; line-height: 1.5;"><code>ai_type = fields.Selection(
     [('prospect', 'Prospect'),
      ('customer', 'Customer'),
      ('supplier', 'Supplier')],
@@ -236,14 +236,14 @@ class SaleOrder(models.Model):
 )</code></pre>
 
         <h3 style="color: #555; margin-top: 20px;">Vision &mdash; describe an image</h3>
-        <pre style="background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 6px; overflow-x: auto; font-size: 0.9em; line-height: 1.5;"><code>ai_description = fields.Text(
+        <pre style="background: #f5f5f5; color: #333; border: 1px solid #ddd; padding: 20px; border-radius: 6px; overflow-x: auto; font-size: 0.9em; line-height: 1.5;"><code>ai_description = fields.Text(
     ai_compute="Describe this photo: {image_1920}",
     ai_compute_depends=['image_1920'],
     store=True,
 )</code></pre>
 
         <h3 style="color: #555; margin-top: 20px;">PDF and Excel documents</h3>
-        <pre style="background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 6px; overflow-x: auto; font-size: 0.9em; line-height: 1.5;"><code>ai_report = fields.Binary(
+        <pre style="background: #f5f5f5; color: #333; border: 1px solid #ddd; padding: 20px; border-radius: 6px; overflow-x: auto; font-size: 0.9em; line-height: 1.5;"><code>ai_report = fields.Binary(
     "Report (PDF)",
     ai_document_type='pdf',
     ai_compute="Generate an HTML report for {name}",
@@ -271,6 +271,19 @@ class SaleOrder(models.Model):
             <tr><td style="padding: 8px 15px; border-bottom: 1px solid #eee; font-weight: bold;">License</td><td style="padding: 8px 15px; border-bottom: 1px solid #eee;">LGPL-3</td></tr>
             <tr><td style="padding: 8px 15px; border-bottom: 1px solid #eee; font-weight: bold;">Dependencies</td><td style="padding: 8px 15px; border-bottom: 1px solid #eee;">os_ai</td></tr>
         </table>
+    </div>
+
+    <!-- Demo Module -->
+    <div style="margin-bottom: 40px;">
+        <h2 style="color: #017e84; border-bottom: 2px solid #017e84; padding-bottom: 8px;">Demo Module</h2>
+        <div style="background: #f0fafa; border-left: 4px solid #017e84; padding: 15px 20px; border-radius: 0 4px 4px 0;">
+            <p style="margin: 0;">
+                Install <strong>AI Fields Demo</strong>
+                (<code style="background: #fff; padding: 2px 6px; border-radius: 3px;">os_ai_fields_demo</code>)
+                in a <strong>test database</strong> to see 15 working examples of AI-computed fields on the Contact form,
+                covering text, numeric, selection, relational, image, and document field types.
+            </p>
+        </div>
     </div>
 
     <!-- Footer -->
