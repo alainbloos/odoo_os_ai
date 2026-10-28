@@ -124,6 +124,30 @@
 
                         </page>
 
+
+                        <!-- ============================================ -->
+                        <!-- TAB 4: DECISIONS (experimental)               -->
+                        <!-- ============================================ -->
+                        <page string="Decisions" name="ai_decisions">
+                            <div class="alert alert-info" role="status">
+                                Experimental: computed by a decision model (provider with
+                                <em>Typed Decisions</em>, e.g. TypeSafe Jev) instead of a text LLM.
+                                Uncertain answers keep the current value.
+                            </div>
+                            <group>
+                                <group>
+                                    <field name="ai_is_b2b"/>
+                                    <field name="ai_is_b2b_pending" widget="boolean" readonly="0"/>
+                                    <field name="ai_decision_partner_type"/>
+                                    <field name="ai_decision_partner_type_pending" widget="boolean" readonly="0"/>
+                                </group>
+                                <group>
+                                    <field name="ai_decision_country"/>
+                                    <field name="ai_decision_country_pending" widget="boolean" readonly="0"/>
+                                </group>
+                            </group>
+                        </page>
+
                     </notebook>
                 </page>
             </xpath>

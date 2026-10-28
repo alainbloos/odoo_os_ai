@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_ai_log_form_os_ai_fields" model="ir.ui.view">
+        <field name="name">ai.log.form.os_ai_fields</field>
+        <field name="model">os.ai.log</field>
+        <field name="inherit_id" ref="os_ai.view_ai_log_form"/>
+        <field name="arch" type="xml">
+            <field name="success" position="after">
+                <field name="applied_count"/>
+                <field name="failed_count"/>
+            </field>
+            <page name="error" position="after">
+                <page string="Application Errors" name="apply_errors" invisible="not apply_errors">
+                    <field name="apply_errors" readonly="1"/>
+                </page>
+            </page>
+        </field>
+    </record>
+
+    <record id="view_ai_log_tree_os_ai_fields" model="ir.ui.view">
+        <field name="name">ai.log.tree.os_ai_fields</field>
+        <field name="model">os.ai.log</field>
+        <field name="inherit_id" ref="os_ai.view_ai_log_tree"/>
+        <field name="arch" type="xml">
+            <field name="success" position="after">
+                <field name="applied_count" optional="show"/>
+                <field name="failed_count" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

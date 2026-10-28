@@ -40,6 +40,14 @@ class AiLog(models.Model):
     completion_tokens = fields.Integer('Completion Tokens')
     total_tokens = fields.Integer('Total Tokens')
     response_cost = fields.Float('Cost (USD)', digits=(12, 8))
+    cost_status = fields.Selection([
+        ('reported', 'Reported'),
+        ('estimated', 'Estimated'),
+        ('unknown', 'Unknown'),
+    ], string='Cost Source',
+        help="Reported: computed by litellm from the provider usage. Estimated: fixed price "
+             "per image. Unknown: the cost could not be computed (0 does not mean free).",
+    )
 
     # -- Timing --
     duration = fields.Float('Duration (s)', digits=(8, 3))
@@ -48,16 +56,21 @@ class AiLog(models.Model):
     # -- Helpers --
     @api.model
     def log_call(self, vals):
-        """Create a log entry. Designed to be called from compute methods.
+        """Create a log entry with the caller's access rights.
+
+        AI Logs are restricted to administrators: code that logs on behalf of
+        other users calls ``sudo().log_call(vals)`` explicitly. This method is
+        reachable through RPC, so it must not elevate privileges itself.
 
         Args:
             vals (dict): Log values to record.
 
         Returns:
-            ai.log record
+            ai.log record (empty when it could not be created)
         """
         try:
-            return self.sudo().create(vals)
+            with self.env.cr.savepoint():
+                return self.create(vals)
         except Exception as exc:
             _logger.error("os_ai: failed to create ai.log entry: %s", exc)
             return self.browse()

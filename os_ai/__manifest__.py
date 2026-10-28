@@ -3,24 +3,26 @@
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 {
     'name': 'OS AI Base',
-    'version': '19.0.1.0.0',
+    'version': '20.0.1.1.0',
     'category': 'Technical',
     'summary': 'AI provider management, capability routing, and logging via litellm',
     'description': """
         Base module to configure AI Providers (OpenAI, Gemini, Anthropic, etc),
         track logs (prompts, responses, tokens, cost), and manage reusable prompt templates.
 
-        Requires `litellm` Python package.
+        Requires the `litellm` Python package, version 1.104.3 or newer.
     """,
     'author': 'Alain Bloos',
     'website': 'https://github.com/alainbloos/odoo_os_ai',
     'depends': ['base'],
     'external_dependencies': {
-        'python': ['litellm'],
+        # 1.104.3: first release with litellm.systemone() (decision models). Older ones
+        # also drop the reasoning effort of GPT-6 / Claude 5.x or fail on Python 3.10
+        'python': ['litellm>=1.104.3'],
     },
     'data': [
 
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'views/ai_provider_views.xml',
         'views/ai_prompt_views.xml',
         'views/ai_log_views.xml',
