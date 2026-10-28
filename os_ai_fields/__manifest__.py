@@ -3,7 +3,7 @@
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 {
     'name': 'OS AI Computed Fields',
-    'version': '15.0.1.0.0',
+    'version': '15.0.1.1.0',
     'category': 'Customizations',
     'summary': 'Add ai_compute parameter to any Odoo field for LLM-powered values',
     'description': """
@@ -13,8 +13,14 @@
     'author': 'Alain Bloos',
     'website': 'https://github.com/alainbloos/odoo_os_ai',
     'depends': ['os_ai'],
+    'external_dependencies': {
+        'python': ['openpyxl'],
+    },
     'data': [
+        'security/ir.model.access.csv',
         'data/ai_cron.xml',
+        'views/ai_compute_status_views.xml',
+        'views/ai_log_views.xml',
         'views/res_config_settings_views.xml',
     ],
     'installable': True,
