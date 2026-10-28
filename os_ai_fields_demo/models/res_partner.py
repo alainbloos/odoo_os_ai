@@ -37,7 +37,7 @@ class ResPartner(models.Model):
         ai_compute="Write a short professional bio (2-3 sentences) for the contact "
                    "{name} from company {parent_id.name} located in {city}, {country_id.name}. "
                    "Date: {__date__}",
-        ai_compute_depends=['name', 'parent_id', 'city', 'country_id'],
+        ai_compute_depends=['name', 'parent_id.name', 'city', 'country_id.name'],
         # ai_compute_async=True,                 # ← default: True (cron-based)
         # ai_compute_batch_size=40,              # ← default: 40 records per LLM call
         store=True,
@@ -72,7 +72,7 @@ class ResPartner(models.Model):
                    "job_title={function}. "
                    "Respond ONLY with an integer number.",
         ai_compute_depends=['name', 'email', 'phone', 'website',
-                            'is_company', 'city', 'country_id', 'function'],
+                            'is_company', 'city', 'country_id.name', 'function'],
         store=True,
         tracking=True,
     )
@@ -88,7 +88,7 @@ class ResPartner(models.Model):
                    "is in {state_id.name}, {country_id.name}, "
                    "has email={email}, phone={phone}. "
                    "Respond ONLY with a decimal number (e.g. 7.5).",
-        ai_compute_depends=['name', 'lang', 'state_id', 'country_id', 'email', 'phone'],
+        ai_compute_depends=['name', 'lang', 'state_id.name', 'country_id.name', 'email', 'phone'],
         store=True,
         tracking=True,
     )
@@ -107,9 +107,9 @@ class ResPartner(models.Model):
                    "{country_id.name} {zip}. "
                    "Internal notes: {comment}. "
                    "Do not use inline styles or CSS. Only basic HTML.",
-        ai_compute_depends=['name', 'parent_id', 'function',
+        ai_compute_depends=['name', 'parent_id.name', 'function',
                             'email', 'phone', 'street', 'city',
-                            'state_id', 'country_id', 'zip', 'comment'],
+                            'state_id.name', 'country_id.name', 'zip', 'comment'],
         store=True,
     )
 
@@ -134,8 +134,8 @@ class ResPartner(models.Model):
                    "Classify as exactly ONE of these options: "
                    "prospect, customer, supplier, partner, other. "
                    "Respond ONLY with the keyword, nothing else.",
-        ai_compute_depends=['name', 'ref', 'vat', 'category_id',
-                            'is_company', 'function', 'parent_id'],
+        ai_compute_depends=['name', 'ref', 'vat', 'category_id.name',
+                            'is_company', 'function', 'parent_id.name'],
         store=True,
         tracking=True,
     )
@@ -151,7 +151,7 @@ class ResPartner(models.Model):
                    "Tags/categories: {category_id}. "
                    "Is company: {is_company}. "
                    "Describe the structure briefly in 2-3 sentences.",
-        ai_compute_depends=['name', 'child_ids', 'category_id', 'is_company'],
+        ai_compute_depends=['name', 'child_ids.name', 'category_id.name', 'is_company'],
         store=True,
         tracking=True,
     )
@@ -167,7 +167,7 @@ class ResPartner(models.Model):
                    "Country: {country_id.name}. Tax ID: {vat}. "
                    "Generate a brief summary of their banking situation in 1-2 sentences. "
                    "If there is no banking data, state that.",
-        ai_compute_depends=['name', 'bank_ids', 'country_id', 'vat'],
+        ai_compute_depends=['name', 'bank_ids.acc_number', 'country_id.name', 'vat'],
         store=True,
         tracking=True,
     )
@@ -187,7 +187,7 @@ class ResPartner(models.Model):
                    "city={city}, state={state_id.name}, zip={zip}, "
                    "phone={phone}. "
                    "Determine the most likely country from the available options.",
-        ai_compute_depends=['street', 'city', 'state_id', 'zip', 'phone'],
+        ai_compute_depends=['street', 'city', 'state_id.name', 'zip', 'phone'],
         store=True,
         tracking=True,
     )
@@ -209,7 +209,7 @@ class ResPartner(models.Model):
                    "country={country_id.name}, notes={comment}. "
                    "Select the most relevant tags/categories from the available options.",
         ai_compute_depends=['name', 'email', 'phone', 'is_company',
-                            'function', 'parent_id', 'city', 'country_id', 'comment'],
+                            'function', 'parent_id.name', 'city', 'country_id.name', 'comment'],
         store=True,
         tracking=True,
     )
@@ -241,7 +241,7 @@ class ResPartner(models.Model):
                    "for business use. Use a simple color palette. "
                    "The company is located in {city}, {country_id.name} "
                    "and works in the following area: {function}.",
-        ai_compute_depends=['name', 'city', 'country_id', 'function'],
+        ai_compute_depends=['name', 'city', 'country_id.name', 'function'],
         store=True,
     )
 
@@ -280,9 +280,9 @@ class ResPartner(models.Model):
                    "Include a header with the contact name, a summary section, "
                    "contact details in a table, and a brief analysis. "
                    "Use clean HTML with <h1>, <h2>, <table>, <p> tags.",
-        ai_compute_depends=['name', 'parent_id', 'function', 'email', 'phone',
-                            'street', 'city', 'state_id', 'country_id', 'zip',
-                            'category_id', 'comment'],
+        ai_compute_depends=['name', 'parent_id.name', 'function', 'email', 'phone',
+                            'street', 'city', 'state_id.name', 'country_id.name', 'zip',
+                            'category_id.name', 'comment'],
         store=True,
     )
     ai_partner_report_filename = fields.Char(
@@ -304,13 +304,61 @@ class ResPartner(models.Model):
                    "Is company: {is_company}. Language: {lang}. "
                    "Create meaningful columns and rows with the data. "
                    "Include a 'Field' column and a 'Value' column.",
-        ai_compute_depends=['name', 'parent_id', 'function', 'email', 'phone',
-                            'city', 'country_id', 'website', 'vat',
+        ai_compute_depends=['name', 'parent_id.name', 'function', 'email', 'phone',
+                            'city', 'country_id.name', 'website', 'vat',
                             'is_company', 'lang'],
         store=True,
     )
     ai_partner_spreadsheet_filename = fields.Char(
         compute='_compute_ai_partner_spreadsheet_filename',
+    )
+
+    # ------------------------------------------------------------------
+    # Decision engine (experimental) — typed decisions instead of text
+    # Demonstrates: ai_compute_engine='decision' (e.g. TypeSafe Jev).
+    # The prompt placeholders become the data ("state") given to the model;
+    # the instructions only reference them. Computed only when a provider
+    # with "Typed Decisions" is active; text LLM fields are not affected.
+    # ------------------------------------------------------------------
+    ai_is_b2b = fields.Boolean(
+        "AI Decision: Business Contact",
+        ai_compute_engine='decision',
+        ai_compute="Is {name} a business (company, shop, firm, organization) rather than "
+                   "an individual person? Job title: {function}. Website: {website}. "
+                   "Email: {email}.",
+        ai_compute_depends=['name', 'function', 'website', 'email'],
+        # ai_decision_threshold=0.5, ai_decision_margin=0.15  # ← defaults
+        store=True,
+    )
+    ai_decision_partner_type = fields.Selection(
+        [
+            ('prospect', 'Prospect'),
+            ('customer', 'Customer'),
+            ('supplier', 'Supplier'),
+            ('partner', 'Partner'),
+            ('other', 'Other'),
+        ],
+        string="AI Decision: Relationship",
+        ai_compute_engine='decision',
+        ai_compute="Which relationship does our company have with {name}? "
+                   "Tags: {category_id}. Job title: {function}. "
+                   "Parent company: {parent_id.name}.",
+        ai_compute_depends=['name', 'category_id.name', 'function', 'parent_id.name'],
+        ai_decision_min_confidence=0.6,
+        store=True,
+    )
+    ai_decision_country = fields.Many2one(
+        'res.country',
+        string="AI Decision: Country",
+        domain=[('code', 'in', [
+            'AR', 'BO', 'BR', 'CL', 'CO', 'EC',
+            'GY', 'PY', 'PE', 'SR', 'UY', 'VE',
+        ])],
+        ai_compute_engine='decision',
+        ai_compute="In which country is this address? Street: {street}. City: {city}. "
+                   "State: {state_id.name}. Zip: {zip}. Phone: {phone}.",
+        ai_compute_depends=['street', 'city', 'state_id.name', 'zip', 'phone'],
+        store=True,
     )
 
     @api.depends('name')

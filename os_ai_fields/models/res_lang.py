@@ -6,6 +6,8 @@ import logging
 
 from odoo import models
 
+from ..patch import mark_pending
+
 _logger = logging.getLogger(__name__)
 
 
@@ -55,7 +57,7 @@ class ResLang(models.Model):
                 try:
                     records = Model.sudo().search([])
                     if records:
-                        records.write({pending_name: True})
+                        mark_pending(records, fname)
                         _logger.info(
                             "os_ai_fields: marked %d records pending for %s.%s "
                             "(new language: %s)",

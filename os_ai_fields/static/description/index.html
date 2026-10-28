@@ -87,7 +87,28 @@ class SaleOrder(models.Model):
                     <strong>PDF &amp; Excel Document Generation</strong><br/>
                     Binary fields with <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">ai_document_type='pdf'</code> or
                     <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">'xlsx'</code> generate downloadable documents.
-                    Uses wkhtmltopdf and openpyxl (both bundled with Odoo).
+                    PDF uses the report engine of the database (wkhtmltopdf must be installed on the server, as for any
+                    Odoo PDF report); the generated HTML is sanitized so that the engine never fetches external content.
+                    Excel uses openpyxl; text cells never become formulas and identifiers such as 00123 stay text.
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee; vertical-align: top;">&#128737;</td>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee;">
+                    <strong>Safe Updates</strong><br/>
+                    Every answer is validated before it is stored: a failed call or an invalid, truncated or partial
+                    answer never replaces the current value. Failed records are retried later and listed in
+                    <strong>Settings &gt; Technical &gt; OS AI &gt; AI Computation Errors</strong>.
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee; vertical-align: top;">&#9878;</td>
+                <td style="padding: 12px 15px; border-bottom: 1px solid #eee;">
+                    <strong>Decision Models (experimental)</strong><br/>
+                    Boolean, Selection and Many2one fields can opt in to a decision model such as TypeSafe Jev with
+                    <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">ai_compute_engine='decision'</code>:
+                    typed answers with probabilities instead of generated text; uncertain answers keep the current value.
+                    Calls go through litellm like any other provider and are logged with tokens and cost.
                 </td>
             </tr>
             <tr>
@@ -259,7 +280,7 @@ class SaleOrder(models.Model):
             <li style="margin-bottom: 10px;">Install <strong>OS AI Base</strong> first (pulled automatically as a dependency).</li>
             <li style="margin-bottom: 10px;">Configure at least one AI provider in <strong>Settings &gt; Technical &gt; OS AI &gt; AI Providers</strong> (Developer Mode required).</li>
             <li style="margin-bottom: 10px;">Optionally adjust the system prompt in <strong>Settings &gt; OS AI Fields</strong>.</li>
-            <li style="margin-bottom: 10px;">The background cron runs every 5 minutes by default. Adjust in <strong>Settings &gt; Technical &gt; Automation &gt; Scheduled Actions</strong>.</li>
+            <li style="margin-bottom: 10px;">The background cron runs every minute by default (each run starts no call after <code>os_ai_fields.cron_time_budget</code> seconds). Failed computations are listed in <strong>Settings &gt; Technical &gt; OS AI &gt; AI Computation Errors</strong>. Adjust the schedule in <strong>Settings &gt; Technical &gt; Automation &gt; Scheduled Actions</strong>.</li>
         </ol>
     </div>
 
@@ -280,7 +301,7 @@ class SaleOrder(models.Model):
             <p style="margin: 0;">
                 Install <strong>AI Fields Demo</strong>
                 (<code style="background: #fff; padding: 2px 6px; border-radius: 3px;">os_ai_fields_demo</code>)
-                in a <strong>test database</strong> to see 15 working examples of AI-computed fields on the Contact form,
+                in a <strong>test database</strong> to see 18 working examples of AI-computed fields on the Contact form,
                 covering text, numeric, selection, relational, image, and document field types.
             </p>
         </div>

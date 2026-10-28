@@ -4,4 +4,3 @@ os_ai.access_ai_provider_user,access_ai_provider_user,os_ai.model_os_ai_provider
 os_ai.access_ai_prompt_system,access_ai_prompt_system,os_ai.model_os_ai_prompt,base.group_system,1,1,1,1
 os_ai.access_ai_prompt_user,access_ai_prompt_user,os_ai.model_os_ai_prompt,base.group_user,1,0,0,0
 os_ai.access_ai_log_system,access_ai_log_system,os_ai.model_os_ai_log,base.group_system,1,1,1,1
-os_ai.access_ai_log_user,access_ai_log_user,os_ai.model_os_ai_log,base.group_user,1,0,0,0
