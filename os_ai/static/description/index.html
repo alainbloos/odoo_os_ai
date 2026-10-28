@@ -14,11 +14,11 @@
         <p>
             <strong>OS AI Base</strong> is the core infrastructure module that brings AI capabilities to your Odoo instance.
             Configure multiple AI providers, route requests to the right model based on capabilities, and keep full audit
-            logs of every LLM call &mdash; all from within Odoo.
+            logs of the AI calls &mdash; all from within Odoo.
         </p>
         <p>
             Powered by <a href="https://github.com/BerriAI/litellm" style="color: #017e84;">litellm</a>, the module supports
-            100+ LLM providers out of the box, including cloud APIs and locally hosted models via
+            the main cloud APIs, OpenAI-compatible endpoints and locally hosted models via
             <a href="https://ollama.com" style="color: #017e84;">Ollama</a>.
         </p>
     </div>
@@ -52,7 +52,7 @@
                 <td style="padding: 12px 15px; border-bottom: 1px solid #eee; vertical-align: top;">&#128203;</td>
                 <td style="padding: 12px 15px; border-bottom: 1px solid #eee;">
                     <strong>Full Logging &amp; Audit Trail</strong><br/>
-                    Every LLM call is recorded: provider, model, prompts, response, token usage, cost in USD, duration, and success/error status.
+                    Every call made by OS AI Computed Fields is recorded, also when its answer is discarded: provider, model, prompts, response, token usage, cost in USD, duration, and success/error status. Other modules log their calls with the same model.
                 </td>
             </tr>
             <tr>
@@ -76,8 +76,7 @@
     <div style="margin-bottom: 40px;">
         <h2 style="color: #017e84; border-bottom: 2px solid #017e84; padding-bottom: 8px;">Supported Providers</h2>
         <p>
-            All routing is handled by <strong>litellm</strong>, which supports <strong>100+ LLM providers</strong>.
-            The following have first-class support with built-in type selection:
+            Calls go through <strong>litellm</strong>. These provider types are built in:
         </p>
         <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
             <thead>
@@ -87,25 +86,39 @@
                 </tr>
             </thead>
             <tbody>
-                <tr><td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>OpenAI</strong></td><td style="padding: 10px 15px; border-bottom: 1px solid #eee;">GPT-4o, o-series, gpt-image-1, DALL-E</td></tr>
-                <tr><td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>Google Gemini</strong></td><td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Gemini 2.5 Flash, Gemini Pro, Imagen</td></tr>
-                <tr><td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>Anthropic</strong></td><td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Claude Sonnet, Claude Opus, Claude Haiku</td></tr>
-                <tr><td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>xAI</strong></td><td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Grok models</td></tr>
-                <tr><td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>DeepSeek</strong></td><td style="padding: 10px 15px; border-bottom: 1px solid #eee;">DeepSeek Chat, DeepSeek Reasoner</td></tr>
-                <tr><td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>Mistral</strong></td><td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Mistral Large, Pixtral</td></tr>
+                <tr><td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>OpenAI</strong></td><td style="padding: 10px 15px; border-bottom: 1px solid #eee;">GPT-6 Luna / Sol / Astra, GPT-5.4, gpt-image-2</td></tr>
+                <tr><td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>Google Gemini</strong></td><td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Gemini 3.8 Flash, 3.5 Flash-Lite, 3.1 Pro, Nano Banana 2 (image)</td></tr>
+                <tr><td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>Anthropic</strong></td><td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Claude Sonnet 5.5, Opus 5.5, Fable 5.1, Haiku 4.5</td></tr>
+                <tr><td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>xAI</strong></td><td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Grok 4.7, Grok 4.3, Grok Imagine (image)</td></tr>
+                <tr><td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>DeepSeek</strong></td><td style="padding: 10px 15px; border-bottom: 1px solid #eee;">DeepSeek Flash (V4.1), DeepSeek V4 Pro</td></tr>
+                <tr><td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>Mistral</strong></td><td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Mistral Medium 3.5, Mistral Large 3, Mistral Small</td></tr>
                 <tr><td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>Ollama (Local)</strong></td><td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Qwen, Gemma, Phi, Llama &mdash; any locally hosted model</td></tr>
+                <tr><td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>TypeSafe (experimental)</strong></td><td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Jev 1.14 / 1.13 &mdash; decision models for yes/no and one-of-N fields, through litellm&rsquo;s Decisions API</td></tr>
             </tbody>
         </table>
         <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
-            Any model from any litellm-compatible provider can be used, including self-hosted endpoints via custom base URLs.
+            Other services with an OpenAI-compatible API work with the OpenAI type and their base URL: Kimi K3.1 (Moonshot AI, tested),
+            OpenRouter, vLLM, LM Studio... See the README for the Kimi settings.
         </p>
+    </div>
+
+    <!-- Upgrading -->
+    <div style="margin-bottom: 40px; padding: 15px 20px; background: #fff8e1; border-left: 4px solid #f0ad4e; border-radius: 4px;">
+        <h2 style="color: #017e84; margin-top: 0;">Upgrading from 1.0</h2>
+        <ul style="padding-left: 20px; margin-bottom: 0;">
+            <li style="margin-bottom: 6px;">Install <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">litellm</code> 1.104.3 or newer first: the upgrade is refused with an older one</li>
+            <li style="margin-bottom: 6px;">API keys and AI Logs (full prompts and answers) are now visible to administrators only</li>
+            <li style="margin-bottom: 6px;">Existing providers keep sending their temperature; new ones use the model default</li>
+            <li style="margin-bottom: 6px;">Prompts customized in the UI are kept on module updates</li>
+            <li>Full list of changes: <a href="https://github.com/alainbloos/odoo_os_ai/blob/17.0/CHANGELOG.md" style="color: #017e84;">CHANGELOG</a></li>
+        </ul>
     </div>
 
     <!-- Configuration -->
     <div style="margin-bottom: 40px;">
         <h2 style="color: #017e84; border-bottom: 2px solid #017e84; padding-bottom: 8px;">Configuration</h2>
         <ol style="padding-left: 20px;">
-            <li style="margin-bottom: 10px;">Install the <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">litellm</code> Python package: <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">pip install litellm</code></li>
+            <li style="margin-bottom: 10px;">Install the <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">litellm</code> Python package: <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">pip install "litellm>=1.104.3"</code> (1.104.3 or newer is required: decision models and the current chat models; never 1.82.7 or 1.82.8, compromised on PyPI in March 2026)</li>
             <li style="margin-bottom: 10px;">Enable <strong>Developer Mode</strong> (Settings &gt; General Settings &gt; Developer Tools)</li>
             <li style="margin-bottom: 10px;">Navigate to <strong>Settings &gt; Technical &gt; OS AI &gt; AI Providers</strong></li>
             <li style="margin-bottom: 10px;">Create a provider: select the type, enter your API key and model name</li>
@@ -143,7 +156,7 @@
             <tr><td style="padding: 8px 15px; border-bottom: 1px solid #eee; font-weight: bold; width: 180px;">Technical Name</td><td style="padding: 8px 15px; border-bottom: 1px solid #eee;"><code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">os_ai</code></td></tr>
             <tr><td style="padding: 8px 15px; border-bottom: 1px solid #eee; font-weight: bold;">License</td><td style="padding: 8px 15px; border-bottom: 1px solid #eee;">LGPL-3</td></tr>
             <tr><td style="padding: 8px 15px; border-bottom: 1px solid #eee; font-weight: bold;">Dependencies</td><td style="padding: 8px 15px; border-bottom: 1px solid #eee;">base</td></tr>
-            <tr><td style="padding: 8px 15px; border-bottom: 1px solid #eee; font-weight: bold;">Python Dependencies</td><td style="padding: 8px 15px; border-bottom: 1px solid #eee;">litellm</td></tr>
+            <tr><td style="padding: 8px 15px; border-bottom: 1px solid #eee; font-weight: bold;">Python Dependencies</td><td style="padding: 8px 15px; border-bottom: 1px solid #eee;">litellm 1.104.3 or newer (tested: 1.104.3, 1.105.0, 1.106.3)</td></tr>
         </table>
     </div>
 

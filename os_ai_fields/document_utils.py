@@ -6,23 +6,30 @@
 Post-processing utilities for AI-generated documents.
 
 These functions convert structured LLM output (JSON / HTML) into binary
-documents using libraries already bundled with Odoo — no extra dependencies.
+documents with openpyxl (declared in the manifest) and the database's report
+engine. The model output is untrusted input: spreadsheet cells never become
+formulas and the HTML is sanitized before the PDF engine sees it.
 
   json_to_xlsx  — JSON {"headers": [...], "rows": [[...], ...]} → base64 xlsx
-  html_to_pdf   — HTML string → base64 pdf  (via wkhtmltopdf)
+  html_to_pdf   — HTML string → base64 pdf  (report engine of the database)
 """
 
 import base64
 import io
 import json
 import logging
+import math
 import re
+
+from lxml import html as lxml_html
+
+from .compat import render_pdf
 
 _logger = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
-# Excel  (openpyxl — bundled with Odoo, used by base_import)
+# Excel  (openpyxl)
 # ---------------------------------------------------------------------------
 
 def json_to_xlsx(content_str):
@@ -50,8 +57,8 @@ def json_to_xlsx(content_str):
     # -- Parse JSON --------------------------------------------------------
     try:
         cleaned = _strip_markdown_fences(content_str)
-        data = json.loads(cleaned)
-    except (json.JSONDecodeError, TypeError) as exc:
+        data = json.loads(cleaned, object_pairs_hook=_reject_duplicate_keys)
+    except (TypeError, ValueError) as exc:
         _logger.error("os_ai_fields: json_to_xlsx — invalid JSON: %s\n%s",
                        exc, (content_str or '')[:500])
         return False
@@ -62,6 +69,13 @@ def json_to_xlsx(content_str):
 
     headers = data.get('headers') or []
     rows = data.get('rows') or []
+    if not isinstance(headers, list) or not isinstance(rows, list):
+        _logger.error("os_ai_fields: json_to_xlsx — headers and rows must be lists")
+        return False
+    rows = [row if isinstance(row, list) else [row] for row in rows]
+    if not all(_is_cell(value) for value in headers) or not all(_is_cell(value) for row in rows for value in row):
+        _logger.error("os_ai_fields: json_to_xlsx — cells must be text, numbers, booleans or null")
+        return False
 
     if not headers and not rows:
         _logger.warning("os_ai_fields: json_to_xlsx — empty headers and rows")
@@ -73,7 +87,7 @@ def json_to_xlsx(content_str):
     ws.title = "Sheet1"
 
     if headers:
-        ws.append([str(h) for h in headers])
+        _append_row(ws, ['' if h is None else str(h) for h in headers])
         # Bold header row
         from openpyxl.styles import Font
         bold = Font(bold=True)
@@ -81,10 +95,7 @@ def json_to_xlsx(content_str):
             cell.font = bold
 
     for row in rows:
-        if isinstance(row, list):
-            ws.append([_coerce_cell_value(v) for v in row])
-        else:
-            ws.append([_coerce_cell_value(row)])
+        _append_row(ws, [_coerce_cell_value(v) for v in row])
 
     # Auto-fit column widths (approximate)
     for col in ws.columns:
@@ -103,14 +114,14 @@ def json_to_xlsx(content_str):
 
 
 # ---------------------------------------------------------------------------
-# PDF  (wkhtmltopdf — bundled with Odoo)
+# PDF  (report engine of the database: wkhtmltopdf, Paper Muncher in 20+...)
 # ---------------------------------------------------------------------------
 
 def html_to_pdf(env, html_str):
-    """Convert an HTML string into a base64-encoded PDF via wkhtmltopdf.
+    """Convert an HTML string into a base64-encoded PDF.
 
-    Uses Odoo's ``ir.actions.report._run_wkhtmltopdf()`` which is available
-    in all supported Odoo versions (14–18).
+    Uses the report engine of the database (wkhtmltopdf, or the engine
+    configured in Odoo 20+), see ``compat.render_pdf``.
 
     Args:
         env: Odoo Environment (used to access ``ir.actions.report``).
@@ -130,11 +141,16 @@ def html_to_pdf(env, html_str):
         cleaned = _wrap_html_fragment(cleaned)
 
     try:
-        IrReport = env['ir.actions.report']
-        pdf_bytes = IrReport._run_wkhtmltopdf(bodies=[cleaned])
+        cleaned = sanitize_html(cleaned)
+    except Exception as exc:
+        _logger.error("os_ai_fields: html_to_pdf — the HTML cannot be parsed: %s", exc)
+        return False
+
+    try:
+        pdf_bytes = render_pdf(env, cleaned)
         return base64.b64encode(pdf_bytes).decode('ascii')
     except Exception as exc:
-        _logger.error("os_ai_fields: html_to_pdf — wkhtmltopdf failed: %s", exc)
+        _logger.error("os_ai_fields: html_to_pdf — PDF rendering failed: %s", exc)
         return False
 
 
@@ -142,24 +158,142 @@ def html_to_pdf(env, html_str):
 # Internal helpers
 # ---------------------------------------------------------------------------
 
+# A plain decimal number: no sign other than "-", no leading zeros, no exponent
+# and at most 11 integer digits. Anything else (00123, +5491112345678, long
+# references) is an identifier and stays text.
+_CELL_NUMBER_RE = re.compile(r'-?(?:0|[1-9]\d{0,10})(?:\.\d{1,10})?')
+
+
+def _reject_duplicate_keys(pairs):
+    """json.loads keeps the last of repeated keys: refuse them instead."""
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError('the answer repeats the key %r' % key)
+        result[key] = value
+    return result
+
+
+def _is_cell(value):
+    return value is None or isinstance(value, (str, bool, int)) or (isinstance(value, float) and math.isfinite(value))
+
+
 def _coerce_cell_value(value):
-    """Try to convert a string cell value to a numeric type for proper Excel formatting."""
+    """Spreadsheet value of a cell: plain decimal numbers and true/false are converted."""
     if not isinstance(value, str):
         return value
-    # Try integer
-    try:
-        return int(value)
-    except (ValueError, TypeError):
-        pass
-    # Try float
-    try:
-        return float(value)
-    except (ValueError, TypeError):
-        pass
-    # Boolean-like
-    if value.lower() in ('true', 'false'):
-        return value.lower() == 'true'
+    text = value.strip()
+    if _CELL_NUMBER_RE.fullmatch(text):
+        return float(text) if '.' in text else int(text)
+    if text.lower() in ('true', 'false'):
+        return text.lower() == 'true'
     return value
+
+
+def _append_row(ws, values):
+    """Append a row; text is always stored as text, never as a formula."""
+    ws.append(values)
+    for cell, value in zip(ws[ws.max_row], values):
+        if isinstance(value, str):
+            cell.data_type = 's'
+
+
+# ---------------------------------------------------------------------------
+# HTML sanitizer for the PDF engine
+# ---------------------------------------------------------------------------
+
+# Elements removed with their content: scripts, embedded or remote content,
+# forms and vector graphics (SVG can reference external resources).
+_DROPPED_TAGS = frozenset({
+    'script', 'iframe', 'frame', 'frameset', 'object', 'embed', 'applet', 'link', 'base', 'meta',
+    'svg', 'math', 'audio', 'video', 'source', 'track', 'picture', 'canvas', 'template', 'noscript',
+    'input', 'button', 'select', 'textarea', 'portal', 'param',
+})
+# Elements kept; other tags are removed but their text is kept.
+_SAFE_TAGS = frozenset({
+    'html', 'head', 'body', 'title', 'style', 'div', 'span', 'p', 'br', 'hr', 'h1', 'h2', 'h3', 'h4',
+    'h5', 'h6', 'b', 'strong', 'i', 'em', 'u', 's', 'strike', 'del', 'ins', 'small', 'big', 'sub', 'sup',
+    'mark', 'abbr', 'cite', 'q', 'blockquote', 'pre', 'code', 'kbd', 'samp', 'var', 'address', 'time',
+    'ul', 'ol', 'li', 'dl', 'dt', 'dd', 'table', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td', 'caption',
+    'colgroup', 'col', 'a', 'img', 'section', 'article', 'header', 'footer', 'main', 'nav', 'aside',
+    'figure', 'figcaption', 'center', 'font', 'label', 'details', 'summary',
+})
+_SAFE_ATTRS = frozenset({
+    'class', 'id', 'style', 'title', 'alt', 'lang', 'dir', 'colspan', 'rowspan', 'align', 'valign',
+    'width', 'height', 'border', 'cellpadding', 'cellspacing', 'scope', 'headers', 'start', 'type',
+    'reversed', 'span', 'href', 'src', 'name', 'abbr', 'datetime', 'summary', 'bgcolor', 'color',
+    'face', 'size', 'media',
+})
+_DATA_IMAGE_RE = re.compile(r'data:image/(?:png|jpe?g|gif|webp);base64,[A-Za-z0-9+/=\s]+', re.IGNORECASE)
+_SAFE_HREF_RE = re.compile(r'(?:https?:|mailto:|#)', re.IGNORECASE)
+_CSS_COMMENT_RE = re.compile(r'/\*.*?\*/', re.DOTALL)
+_CSS_IMPORT_RE = re.compile(r'@import[^;]*;?', re.IGNORECASE)
+_CSS_IMAGE_SET_RE = re.compile(r'(?:-webkit-)?image-set\s*\([^)]*\)', re.IGNORECASE)
+_CSS_URL_RE = re.compile(r'url\s*\(\s*([\'"]?)(.*?)\1\s*\)', re.IGNORECASE | re.DOTALL)
+
+
+def _sanitize_css(css):
+    """CSS without remote resources: url() other than embedded images, @import, image-set."""
+    css = _CSS_COMMENT_RE.sub('', css or '')
+    if '\\' in css:
+        return ''  # escapes could hide url( or @import
+    css = _CSS_IMPORT_RE.sub('', css)
+    css = _CSS_IMAGE_SET_RE.sub('none', css)
+    return _CSS_URL_RE.sub(
+        lambda match: match.group(0) if _DATA_IMAGE_RE.fullmatch(match.group(2).strip()) else 'none', css)
+
+
+def sanitize_html(document):
+    """Make generated HTML safe for the PDF engine.
+
+    The engine fetches every resource the HTML references, from the Odoo
+    server: generated HTML must not reach other hosts, local services or
+    files. Only formatting elements are kept, images must be embedded
+    (data:image/... base64), CSS cannot load anything, and there are no
+    scripts, frames, forms or event handlers. Links stay clickable: the
+    engine does not fetch them.
+
+    Returns:
+        str: a complete HTML document (UTF-8).
+    """
+    doc = lxml_html.document_fromstring(document)
+    for element in list(doc.iter()):
+        if element.getparent() is None and element is not doc:
+            continue  # already removed with an ancestor
+        tag = element.tag.lower() if isinstance(element.tag, str) else None
+        if tag is None:  # comment or processing instruction
+            element.drop_tree()
+            continue
+        if tag in _DROPPED_TAGS:
+            element.drop_tree()
+            continue
+        if tag not in _SAFE_TAGS:
+            element.drop_tag()
+            continue
+        if tag == 'style':
+            element.text = _sanitize_css(element.text_content())
+            for child in list(element):
+                element.remove(child)
+        for name in list(element.attrib):
+            value = element.attrib[name]
+            lname = name.lower()
+            if lname not in _SAFE_ATTRS:
+                del element.attrib[name]
+            elif lname == 'style':
+                element.attrib[name] = _sanitize_css(value)
+            elif lname == 'href' and not (tag == 'a' and _SAFE_HREF_RE.match(value.strip())):
+                del element.attrib[name]
+            elif lname == 'src' and not (tag == 'img' and _DATA_IMAGE_RE.fullmatch(value.strip())):
+                del element.attrib[name]
+        if tag == 'img' and 'src' not in element.attrib:
+            element.drop_tree()
+
+    head = doc.find('head')
+    if head is None:
+        head = lxml_html.Element('head')
+        doc.insert(0, head)
+    head.insert(0, lxml_html.Element('meta', charset='utf-8'))
+    return lxml_html.tostring(doc, encoding='unicode', method='html', doctype='<!DOCTYPE html>')
 
 
 def _strip_markdown_fences(text):

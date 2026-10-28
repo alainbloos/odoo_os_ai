@@ -34,6 +34,7 @@
                             <field name="completion_tokens"/>
                             <field name="total_tokens"/>
                             <field name="response_cost"/>
+                            <field name="cost_status"/>
                         </group>
                     </group>
                     <notebook>
@@ -77,6 +78,7 @@
                 <field name="success"/>
                 <field name="total_tokens"/>
                 <field name="response_cost" sum="Total Cost"/>
+                <field name="cost_status" optional="hide"/>
                 <field name="duration" sum="Total Duration"/>
             </tree>
         </field>

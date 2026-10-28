@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo noupdate="1">
-    <!-- Demo AI Providers representing the latest models and capabilities -->
+    <!-- Demo AI Providers representing current models and capabilities.
+
+         They are created archived: activate the one you add an API key to.
+         An active provider without key would be chosen first and fail.
+
+         noupdate: providers already installed keep their configuration (API
+         keys, model, sequence, active). Retired models are no longer created
+         on new installations; existing ones show a warning with the suggested
+         replacement. Providers added later use sequences >= 100, after the
+         original demo providers (10 to 73). -->
 
     <!-- ============================================================== -->
     <!-- OpenAI                                                          -->
     <!-- ============================================================== -->
 
     <record id="demo_provider_gpt_5_4" model="os.ai.provider">
+        <field name="active" eval="False"/>
         <field name="name">OpenAI GPT-5.4</field>
         <field name="provider_type">openai</field>
         <field name="model_name">gpt-5.4</field>
@@ -17,11 +27,25 @@
         <field name="capable_image_edit">False</field>
     </record>
 
-    <record id="demo_provider_gpt_image_1_5" model="os.ai.provider">
-        <field name="name">OpenAI gpt-image-1.5</field>
+    <record id="demo_provider_gpt_6_luna" model="os.ai.provider">
+        <field name="active" eval="False"/>
+        <field name="name">OpenAI GPT-6 Luna</field>
         <field name="provider_type">openai</field>
-        <field name="model_name">gpt-image-1.5</field>
-        <field name="sequence">21</field>
+        <field name="model_name">gpt-6-luna</field>
+        <field name="reasoning_effort">none</field>
+        <field name="sequence">100</field>
+        <field name="capable_text">True</field>
+        <field name="capable_vision">True</field>
+        <field name="capable_image_generation">False</field>
+        <field name="capable_image_edit">False</field>
+    </record>
+
+    <record id="demo_provider_gpt_image_2" model="os.ai.provider">
+        <field name="active" eval="False"/>
+        <field name="name">OpenAI gpt-image-2</field>
+        <field name="provider_type">openai</field>
+        <field name="model_name">gpt-image-2</field>
+        <field name="sequence">150</field>
         <field name="capable_text">False</field>
         <field name="capable_vision">False</field>
         <field name="capable_image_generation">True</field>
@@ -33,6 +57,7 @@
     <!-- ============================================================== -->
 
     <record id="demo_provider_claude_4_6" model="os.ai.provider">
+        <field name="active" eval="False"/>
         <field name="name">Anthropic Claude 4.6 Sonnet</field>
         <field name="provider_type">anthropic</field>
         <field name="model_name">claude-sonnet-4-6</field>
@@ -43,39 +68,71 @@
         <field name="capable_image_edit">False</field>
     </record>
 
+    <record id="demo_provider_claude_sonnet_5_5" model="os.ai.provider">
+        <field name="active" eval="False"/>
+        <field name="name">Anthropic Claude Sonnet 5.5</field>
+        <field name="provider_type">anthropic</field>
+        <field name="model_name">claude-sonnet-5-5</field>
+        <field name="reasoning_effort">low</field>
+        <field name="sequence">105</field>
+        <field name="capable_text">True</field>
+        <field name="capable_vision">True</field>
+        <field name="capable_image_generation">False</field>
+        <field name="capable_image_edit">False</field>
+    </record>
+
     <!-- ============================================================== -->
     <!-- Google Gemini                                                   -->
     <!-- ============================================================== -->
 
+    <record id="demo_provider_gemini_3_5_flash_lite" model="os.ai.provider">
+        <field name="active" eval="False"/>
+        <field name="name">Google Gemini 3.5 Flash-Lite</field>
+        <field name="provider_type">gemini</field>
+        <field name="model_name">gemini-3.5-flash-lite</field>
+        <field name="reasoning_effort">low</field>
+        <field name="sequence">110</field>
+        <field name="capable_text">True</field>
+        <field name="capable_vision">True</field>
+        <field name="capable_image_generation">False</field>
+        <field name="capable_image_edit">False</field>
+    </record>
 
-
-    <record id="demo_provider_nano_banana_2" model="os.ai.provider">
+    <record id="demo_provider_gemini_3_1_flash_image" model="os.ai.provider">
+        <field name="active" eval="False"/>
         <field name="name">Nano Banana 2 (Gemini 3.1 Flash Image)</field>
         <field name="provider_type">gemini</field>
-        <field name="model_name">gemini-3.1-flash-image-preview</field>
-        <field name="sequence">41</field>
+        <field name="model_name">gemini-3.1-flash-image</field>
+        <field name="sequence">155</field>
         <field name="capable_text">True</field>
         <field name="capable_vision">True</field>
         <field name="capable_image_generation">True</field>
         <field name="capable_image_edit">True</field>
     </record>
 
-    <record id="demo_provider_gemini_2_5_flash_image" model="os.ai.provider">
-        <field name="name">Google Gemini 2.5 Flash Image</field>
-        <field name="provider_type">gemini</field>
-        <field name="model_name">gemini-2.5-flash-image</field>
-        <field name="sequence">42</field>
+    <!-- ============================================================== -->
+    <!-- xAI (Grok)                                                      -->
+    <!-- ============================================================== -->
+
+    <record id="demo_provider_grok_4_3" model="os.ai.provider">
+        <field name="active" eval="False"/>
+        <field name="name">xAI Grok 4.3</field>
+        <field name="provider_type">xai</field>
+        <field name="model_name">grok-4.3</field>
+        <field name="reasoning_effort">low</field>
+        <field name="sequence">115</field>
         <field name="capable_text">True</field>
         <field name="capable_vision">True</field>
-        <field name="capable_image_generation">True</field>
-        <field name="capable_image_edit">True</field>
+        <field name="capable_image_generation">False</field>
+        <field name="capable_image_edit">False</field>
     </record>
 
-    <record id="demo_provider_imagen_4" model="os.ai.provider">
-        <field name="name">Google Imagen 4.0 Fast</field>
-        <field name="provider_type">gemini</field>
-        <field name="model_name">imagen-4.0-fast-generate-001</field>
-        <field name="sequence">43</field>
+    <record id="demo_provider_grok_imagine" model="os.ai.provider">
+        <field name="active" eval="False"/>
+        <field name="name">xAI Grok Imagine</field>
+        <field name="provider_type">xai</field>
+        <field name="model_name">grok-imagine-image</field>
+        <field name="sequence">160</field>
         <field name="capable_text">False</field>
         <field name="capable_vision">False</field>
         <field name="capable_image_generation">True</field>
@@ -83,49 +140,11 @@
     </record>
 
     <!-- ============================================================== -->
-    <!-- xAI (Grok)                                                      -->
-    <!-- ============================================================== -->
-
-    <record id="demo_provider_grok_3" model="os.ai.provider">
-        <field name="name">xAI Grok 3</field>
-        <field name="provider_type">xai</field>
-        <field name="model_name">grok-3</field>
-        <field name="sequence">15</field>
-        <field name="capable_text">True</field>
-        <field name="capable_vision">True</field>
-        <field name="capable_image_generation">False</field>
-        <field name="capable_image_edit">False</field>
-    </record>
-
-    <record id="demo_provider_grok_2_vision" model="os.ai.provider">
-        <field name="name">xAI Grok 2 Vision</field>
-        <field name="provider_type">xai</field>
-        <field name="model_name">grok-2-vision</field>
-        <field name="sequence">16</field>
-        <field name="capable_text">True</field>
-        <field name="capable_vision">True</field>
-        <field name="capable_image_generation">False</field>
-        <field name="capable_image_edit">False</field>
-    </record>
-
-
-
-    <!-- ============================================================== -->
     <!-- Mistral                                                         -->
     <!-- ============================================================== -->
 
-    <record id="demo_provider_pixtral_large" model="os.ai.provider">
-        <field name="name">Mistral Pixtral Large</field>
-        <field name="provider_type">mistral</field>
-        <field name="model_name">pixtral-large-latest</field>
-        <field name="sequence">60</field>
-        <field name="capable_text">True</field>
-        <field name="capable_vision">True</field>
-        <field name="capable_image_generation">False</field>
-        <field name="capable_image_edit">False</field>
-    </record>
-
     <record id="demo_provider_mistral_large" model="os.ai.provider">
+        <field name="active" eval="False"/>
         <field name="name">Mistral Large</field>
         <field name="provider_type">mistral</field>
         <field name="model_name">mistral-large-2512</field>
@@ -136,30 +155,53 @@
         <field name="capable_image_edit">False</field>
     </record>
 
-    <!-- ============================================================== -->
-    <!-- DeepSeek                                                        -->
-    <!-- ============================================================== -->
-
-    <record id="demo_provider_deepseek_chat" model="os.ai.provider">
-        <field name="name">DeepSeek Chat</field>
-        <field name="provider_type">deepseek</field>
-        <field name="model_name">deepseek-chat</field>
-        <field name="sequence">50</field>
+    <record id="demo_provider_mistral_medium_3_5" model="os.ai.provider">
+        <field name="active" eval="False"/>
+        <field name="name">Mistral Medium 3.5</field>
+        <field name="provider_type">mistral</field>
+        <field name="model_name">mistral-medium-3.5</field>
+        <field name="sequence">125</field>
         <field name="capable_text">True</field>
-        <field name="capable_vision">False</field>
+        <field name="capable_vision">True</field>
         <field name="capable_image_generation">False</field>
         <field name="capable_image_edit">False</field>
     </record>
 
-    <record id="demo_provider_deepseek_reasoner" model="os.ai.provider">
-        <field name="name">DeepSeek Reasoner</field>
+    <!-- ============================================================== -->
+    <!-- DeepSeek                                                        -->
+    <!-- ============================================================== -->
+
+    <!-- The DeepSeek API documents JSON mode, not JSON Schema; reasoning off for short field values -->
+    <record id="demo_provider_deepseek_flash" model="os.ai.provider">
+        <field name="active" eval="False"/>
+        <field name="name">DeepSeek V4.1 Flash</field>
         <field name="provider_type">deepseek</field>
-        <field name="model_name">deepseek-reasoner</field>
-        <field name="sequence">51</field>
+        <field name="model_name">deepseek-flash</field>
+        <field name="reasoning_effort">none</field>
+        <field name="sequence">120</field>
+        <field name="structured_output">json_object</field>
         <field name="capable_text">True</field>
+        <field name="capable_vision">True</field>
+        <field name="capable_image_generation">False</field>
+        <field name="capable_image_edit">False</field>
+    </record>
+
+    <!-- ============================================================== -->
+    <!-- TypeSafe (decision model, experimental)                         -->
+    <!-- ============================================================== -->
+
+    <!-- Only used by fields with ai_compute_engine='decision' -->
+    <record id="demo_provider_typesafe_jev" model="os.ai.provider">
+        <field name="active" eval="False"/>
+        <field name="name">TypeSafe Jev 1.14</field>
+        <field name="provider_type">typesafe</field>
+        <field name="model_name">jev-1.14.0</field>
+        <field name="sequence">200</field>
+        <field name="capable_text">False</field>
         <field name="capable_vision">False</field>
         <field name="capable_image_generation">False</field>
         <field name="capable_image_edit">False</field>
+        <field name="capable_decision">True</field>
     </record>
 
     <!-- ============================================================== -->
@@ -167,6 +209,7 @@
     <!-- ============================================================== -->
 
     <record id="demo_provider_ollama_qwen25_3b" model="os.ai.provider">
+        <field name="active" eval="False"/>
         <field name="name">Ollama Qwen 2.5 3B</field>
         <field name="provider_type">ollama</field>
         <field name="model_name">qwen2.5:3b</field>
@@ -178,6 +221,7 @@
     </record>
 
     <record id="demo_provider_ollama_gemma3_4b" model="os.ai.provider">
+        <field name="active" eval="False"/>
         <field name="name">Ollama Gemma 3 4B</field>
         <field name="provider_type">ollama</field>
         <field name="model_name">gemma3:4b</field>
@@ -189,6 +233,7 @@
     </record>
 
     <record id="demo_provider_ollama_phi4_mini" model="os.ai.provider">
+        <field name="active" eval="False"/>
         <field name="name">Ollama Phi-4 Mini</field>
         <field name="provider_type">ollama</field>
         <field name="model_name">phi4-mini</field>
@@ -200,12 +245,25 @@
     </record>
 
     <record id="demo_provider_ollama_phi4" model="os.ai.provider">
+        <field name="active" eval="False"/>
         <field name="name">Ollama Phi-4</field>
         <field name="provider_type">ollama</field>
         <field name="model_name">phi4</field>
         <field name="sequence">73</field>
         <field name="capable_text">True</field>
         <field name="capable_vision">False</field>
+        <field name="capable_image_generation">False</field>
+        <field name="capable_image_edit">False</field>
+    </record>
+
+    <record id="demo_provider_ollama_gemma4_e4b" model="os.ai.provider">
+        <field name="active" eval="False"/>
+        <field name="name">Ollama Gemma 4 E4B</field>
+        <field name="provider_type">ollama</field>
+        <field name="model_name">gemma4:e4b</field>
+        <field name="sequence">190</field>
+        <field name="capable_text">True</field>
+        <field name="capable_vision">True</field>
         <field name="capable_image_generation">False</field>
         <field name="capable_image_edit">False</field>
     </record>
