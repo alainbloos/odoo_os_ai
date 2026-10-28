@@ -34,6 +34,16 @@
                         <field name="prompt_text" nolabel="1" colspan="2"
                                placeholder="Summarize the order {name} for client {partner_id.name} with total {amount_total}"/>
                     </group>
+                    <div attrs="{'invisible': [('is_customized', '=', False)]}" class="alert alert-info" role="status">
+                        <i class="fa fa-pencil"/> This prompt was customized and differs from the default defined in the code.
+                        <button name="action_restore_default" type="object" string="Restore default"
+                                class="btn-link" icon="fa-undo"
+                                confirm="Replace the current prompt with the default defined in the code?"/>
+                    </div>
+                    <group string="Default Prompt (code)" attrs="{'invisible': [('default_prompt_text', '=', False)]}">
+                        <field name="default_prompt_text" nolabel="1" colspan="2"/>
+                    </group>
+                    <field name="is_customized" invisible="1"/>
                 </sheet>
             </form>
         </field>
@@ -51,6 +61,7 @@
                 <field name="name"/>
                 <field name="model_id"/>
                 <field name="field_name"/>
+                <field name="is_customized" optional="show"/>
                 <field name="active" invisible="1"/>
             </tree>
         </field>

@@ -17,15 +17,28 @@
                             <field name="name" placeholder="e.g. My OpenAI"/>
                         </h1>
                     </div>
+                    <div attrs="{'invisible': [('model_status_message', '=', False)]}" class="alert alert-warning" role="alert">
+                        <i class="fa fa-exclamation-triangle"/> <field name="model_status_message" class="d-inline"/>
+                        <button name="action_apply_model_replacement" type="object"
+                                string="Use suggested model" class="btn-link" icon="fa-exchange"
+                                attrs="{'invisible': [('model_replacement', '=', False)]}"
+                                confirm="Switch this provider to the suggested model? This may change results and costs."/>
+                        <field name="model_replacement" invisible="1"/>
+                    </div>
                     <group>
                         <group string="Connection">
                             <field name="provider_type"/>
-                            <field name="model_name" placeholder="e.g. gpt-4o-mini"/>
-                            <field name="api_key" password="False"/>
+                            <field name="model_name" placeholder="e.g. gpt-6-luna"/>
+                            <field name="api_key" password="True"/>
                             <field name="base_url" placeholder="Leave empty for standard providers"/>
                         </group>
                         <group string="Settings">
-                            <field name="temperature"/>
+                            <field name="temperature_mode"/>
+                            <field name="temperature" attrs="{'invisible': [('temperature_mode', '!=', 'custom')]}"/>
+                            <field name="reasoning_effort"/>
+                            <field name="structured_output"/>
+                            <field name="max_output_tokens"/>
+                            <field name="timeout"/>
                             <field name="active" invisible="1"/>
                             <field name="sequence"/>
                         </group>
@@ -40,6 +53,13 @@
                         <field name="capable_vision" widget="boolean_toggle"/>
                         <field name="capable_image_generation" widget="boolean_toggle"/>
                         <field name="capable_image_edit" widget="boolean_toggle"/>
+                        <field name="capable_decision" widget="boolean_toggle"/>
+                        <div colspan="4" attrs="{'invisible': [('provider_type', '!=', 'typesafe')]}"
+                             class="alert alert-info mb-0" role="status">
+                            <i class="fa fa-info-circle"/> Decision models answer typed questions (yes/no, one option) with
+                            probabilities. Only fields declared with <code>ai_compute_engine='decision'</code> use them
+                            (Boolean, Selection, Many2one). Model: e.g. <code>jev-1.14.0</code>.
+                        </div>
                         <div colspan="4">
                             <button name="action_detect_capabilities"
                                     type="object"
@@ -65,11 +85,13 @@
                 <field name="name"/>
                 <field name="provider_type"/>
                 <field name="model_name"/>
+                <field name="model_status_message" optional="show" decoration-warning="model_status_message"/>
                 <field name="active" invisible="1"/>
                 <field name="capable_text" optional="show"/>
                 <field name="capable_vision" optional="show"/>
                 <field name="capable_image_generation" optional="show"/>
                 <field name="capable_image_edit" optional="show"/>
+                <field name="capable_decision" optional="show"/>
             </tree>
         </field>
     </record>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- AI Compute Status — List View                                 -->
+    <!-- ============================================================ -->
+    <record id="view_ai_compute_status_list" model="ir.ui.view">
+        <field name="name">os.ai.compute.status.list</field>
+        <field name="model">os.ai.compute.status</field>
+        <field name="arch" type="xml">
+            <tree string="AI Computation Errors" create="0" edit="0"
+                  decoration-danger="state == 'failed'" decoration-warning="state == 'retry'" decoration-info="state == 'abstained'">
+                <header>
+                    <button name="action_retry" type="object" string="Retry"
+                            icon="fa-refresh" class="btn-secondary"/>
+                </header>
+                <field name="write_date" string="Last Attempt"/>
+                <field name="model_name"/>
+                <field name="field_name"/>
+                <field name="res_id"/>
+                <field name="state"/>
+                <field name="attempts"/>
+                <field name="next_attempt"/>
+                <field name="error_message"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- AI Compute Status — Form View                                 -->
+    <!-- ============================================================ -->
+    <record id="view_ai_compute_status_form" model="ir.ui.view">
+        <field name="name">os.ai.compute.status.form</field>
+        <field name="model">os.ai.compute.status</field>
+        <field name="arch" type="xml">
+            <form string="AI Computation Error" create="0" edit="0">
+                <header>
+                    <button name="action_retry" type="object" string="Retry" class="btn-primary"/>
+                    <button name="action_open_record" type="object" string="Open Record"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="model_name"/>
+                            <field name="field_name"/>
+                            <field name="res_id"/>
+                        </group>
+                        <group>
+                            <field name="attempts"/>
+                            <field name="next_attempt"/>
+                            <field name="write_date" string="Last Attempt"/>
+                        </group>
+                    </group>
+                    <group string="Last Error">
+                        <field name="error_message" nolabel="1" colspan="2"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- AI Compute Status — Search View                               -->
+    <!-- ============================================================ -->
+    <record id="view_ai_compute_status_search" model="ir.ui.view">
+        <field name="name">os.ai.compute.status.search</field>
+        <field name="model">os.ai.compute.status</field>
+        <field name="arch" type="xml">
+            <search string="AI Computation Errors">
+                <field name="model_name"/>
+                <field name="field_name"/>
+                <field name="error_message"/>
+                <filter name="failed" string="Failed" domain="[('state', '=', 'failed')]"/>
+                <filter name="retry" string="Retry scheduled" domain="[('state', '=', 'retry')]"/>
+                <filter name="abstained" string="Low confidence" domain="[('state', '=', 'abstained')]"/>
+                <group>
+                    <filter name="group_field" string="Field" context="{'group_by': 'field_name'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_ai_compute_status" model="ir.actions.act_window">
+        <field name="name">AI Computation Errors</field>
+        <field name="res_model">os.ai.compute.status</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No failed AI computations
+            </p>
+            <p>
+                Records whose AI fields could not be computed are listed here,
+                with the last error and the next scheduled attempt.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_ai_compute_status"
+              name="AI Computation Errors"
+              parent="os_ai.menu_os_ai_root"
+              action="action_ai_compute_status"
+              sequence="40"/>
+
+</odoo>

@@ -18,7 +18,7 @@
     <div style="margin-bottom: 40px;">
         <h2 style="color: #017e84; border-bottom: 2px solid #017e84; padding-bottom: 8px;">Overview</h2>
         <p>
-            This demo module adds <strong>15 AI-computed fields</strong> to the Contact form (<code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">res.partner</code>),
+            This demo module adds <strong>18 AI-computed fields</strong> to the Contact form (<code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">res.partner</code>),
             showcasing every feature of <strong>OS AI Computed Fields</strong>.
             Install it in a test database, configure an AI provider, and see the fields compute automatically.
         </p>
@@ -71,6 +71,11 @@
                     <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">AI Report (PDF), AI Spreadsheet (Excel)</td>
                     <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">ai_document_type='pdf' and 'xlsx'</td>
                 </tr>
+                <tr>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;"><strong>Decisions</strong> (experimental)</td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">Business Contact (Boolean), Relationship (Selection), Country (Many2one)</td>
+                    <td style="padding: 10px 15px; border-bottom: 1px solid #eee;">ai_compute_engine='decision': a decision model (TypeSafe Jev) answers with probabilities; uncertain answers keep the current value</td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -80,8 +85,9 @@
         <h2 style="color: #017e84; border-bottom: 2px solid #017e84; padding-bottom: 8px;">Demo Providers</h2>
         <p>
             The module also installs pre-configured AI provider records for quick testing,
-            including OpenAI, Anthropic, Google Gemini, xAI, DeepSeek, Mistral, and Ollama (local) models.
-            You only need to add your API key to start using them.
+            including OpenAI, Anthropic, Google Gemini, xAI, DeepSeek, Mistral and Ollama (local) models, plus the TypeSafe Jev decision model.
+            They are created archived: add your API key to one of them and activate it (an active provider
+            without key would be chosen first and fail).
         </p>
     </div>
 
@@ -90,8 +96,8 @@
         <h2 style="color: #017e84; border-bottom: 2px solid #017e84; padding-bottom: 8px;">How to Use</h2>
         <ol style="padding-left: 20px;">
             <li style="margin-bottom: 10px;">Install this module in a <strong>test database</strong></li>
-            <li style="margin-bottom: 10px;">Go to <strong>Settings &gt; Technical &gt; OS AI &gt; AI Providers</strong> (Developer Mode required) and add your API key to one of the demo providers</li>
-            <li style="margin-bottom: 10px;">Open any Contact &mdash; the <strong>AI Fields</strong> tab shows all demo fields organized in Text, Images, and Documents sub-tabs</li>
+            <li style="margin-bottom: 10px;">Go to <strong>Settings &gt; Technical &gt; OS AI &gt; AI Providers</strong> (Developer Mode required) and add your API key to one of the demo providers, then activate it (use the <em>Archived</em> filter to see them)</li>
+            <li style="margin-bottom: 10px;">Open any Contact &mdash; the <strong>AI Fields</strong> tab shows all demo fields organized in Text, Images, Documents and Decisions sub-tabs (the Decisions fields need a decision provider such as TypeSafe)</li>
             <li style="margin-bottom: 10px;">Edit and save a contact &mdash; the background cron will compute the AI fields within 5 minutes</li>
         </ol>
     </div>

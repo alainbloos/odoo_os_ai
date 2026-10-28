@@ -4,6 +4,8 @@
 
 from odoo import api, fields, models
 
+from ..compat import get_param, set_param
+
 DEFAULT_SYSTEM_PROMPT = (
     "You are a field computation assistant for an Odoo ERP system. "
     "Your task is to generate values for specific fields based on the instructions provided. "
@@ -26,13 +28,9 @@ class ResConfigSettings(models.TransientModel):
     @api.model
     def get_values(self):
         res = super().get_values()
-        res['os_ai_fields_system_prompt'] = self.env['ir.config_parameter'].sudo().get_param(
-            PARAM_KEY, DEFAULT_SYSTEM_PROMPT,
-        )
+        res['os_ai_fields_system_prompt'] = get_param(self.env, PARAM_KEY, DEFAULT_SYSTEM_PROMPT)
         return res
 
     def set_values(self):
         super().set_values()
-        self.env['ir.config_parameter'].sudo().set_param(
-            PARAM_KEY, self.os_ai_fields_system_prompt or DEFAULT_SYSTEM_PROMPT,
-        )
+        set_param(self.env, PARAM_KEY, self.os_ai_fields_system_prompt or DEFAULT_SYSTEM_PROMPT)
