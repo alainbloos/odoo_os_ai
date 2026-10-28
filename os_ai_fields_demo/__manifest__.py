@@ -3,8 +3,8 @@
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 {
     'name': 'AI Fields Demo',
-    'version': '18.0.1.0.0',
-    'summary': '15 example AI fields on res.partner — install in a test database only',
+    'version': '18.0.1.0.1',
+    'summary': '18 example AI fields on res.partner — install in a test database only',
     'category': 'Technical',
     'author': 'Alain Bloos',
     'maintainer': 'Alain Bloos',
